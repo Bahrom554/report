@@ -19,12 +19,10 @@ class UserService
 
     public function edit($id, $request){
         $user = $this->getUser($id);
-        $user->update($request->only([
-            'name',
-            'username',
-            'role',
-
-        ]));
+        $user->name=$request->name;
+        $user->username=$request->username;
+        $user->role=($user->role!==User::ROLE_ADMIN)? $request->role : User::ROLE_ADMIN ;
+        $user->save();
         return $user;
 
     }
