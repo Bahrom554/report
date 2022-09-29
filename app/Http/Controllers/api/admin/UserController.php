@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\api\admin;
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\admin\UserCreateRequest;
 use App\Http\Requests\admin\UserEditRequest;
@@ -11,6 +10,7 @@ use App\UseCases\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\QueryBuilder;
 
 
 class UserController extends Controller
@@ -20,18 +20,26 @@ class UserController extends Controller
     {
        $this->service=$service;
     }
+    public function index()
+    {
+        $query = QueryBuilder::for(User::class);
+        if (!empty(request()->get('search'))){
+            $query->where('name', 'like', '%'.request()->get('search').'%')
+                  ->orWhere('username', 'like', '%'.request()->get('search').'%')
+                  ->orWhere('role', 'like', '%'.request()->get('search').'%');
+        }
+
+        $query->allowedSorts(request()->sort);
+        return $query->paginate(10);
+
+    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
-    {
-       $users=User::paginate(10);
-       return $users;
-//       return UserListResource::collection($users);
-    }
+
 
 
     /**

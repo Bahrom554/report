@@ -24,11 +24,12 @@ class ApiController extends Controller
             }
         }
         $query = QueryBuilder::for($this->modelClass);
-        foreach ($this->modelClass::SEARCH_ITEMS as $searchItem){
-            if (!empty($request->get($searchItem))) {
-                $query->where($searchItem, 'like', '%'.$request->get($searchItem).'%');
+        if (!empty($request->get('search'))){
+            foreach ($this->modelClass::SEARCH_ITEMS as $searchItem){
+                $query->where($searchItem, 'like', '%'.$request->get('search').'%');
             }
         }
+
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedFilters($filter);
