@@ -3,9 +3,6 @@
   <component name="SshConfigs">
     <configs>
       <sshConfig authType="PASSWORD" host="10.10.110.143" id="10ffb2cb-4dfd-4978-bd1c-676c545b998e" port="22" nameFormat="DESCRIPTIVE" username="dev" useOpenSSHConfig="true" />
-      <sshConfig authType="PASSWORD" host="10.10.110.143" id="5bdc88c3-c59d-43c6-8e9a-cb29808da47b" port="22" customName="dev@10.10.110.143:22 password2" nameFormat="CUSTOM" username="dev" useOpenSSHConfig="true">
-        <option name="customName" value="dev@10.10.110.143:22 password2" />
-      </sshConfig>
     </configs>
   </component>
 </project>

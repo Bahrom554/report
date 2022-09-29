@@ -1,8 +1,7 @@
 <?php
 namespace App\UseCases;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Laravel\Passport\Passport;
 
 
 class UserService

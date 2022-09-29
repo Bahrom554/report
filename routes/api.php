@@ -27,11 +27,13 @@ Route::group(['middleware'=>'auth:api'],function () {
         Route::put('profile','UserController@update');
         Route::put('profile/change-password','UserController@changePassword');
 
+        Route::resource('country','CountryController');
+        Route::resource('ip','IpController');
+        Route::resource('object-type','ObjectTypeController');
+        Route::resource('target-type','TargetTypeController');
+        Route::resource('result-type','ResultTypeController');
 
     });
-
-
-
-
-
 });
+Route::post('image','ImageUploadController@store');
+Route::delete('images/{image}','ImageUploadController@delete');

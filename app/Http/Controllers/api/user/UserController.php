@@ -5,18 +5,11 @@ namespace App\Http\Controllers\api\user;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\user\UserEditRequest;
 use App\Http\Resources\UserListResource;
+use App\Models\User;
 use App\UseCases\UserService;
-use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Laravel\Passport\Client;
-use Laravel\Passport\Passport;
-
 
 
 class UserController extends Controller
