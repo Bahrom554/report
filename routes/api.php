@@ -29,6 +29,8 @@ Route::group(['middleware'=>'auth:api'],function () {
         Route::resource('target', 'TargetController');
         Route::resource('object', 'ObjectController');
         Route::resource('task', 'TaskController');
+        Route::resource('task-item', 'TaskItemController');
+
 
     });
     //user route
