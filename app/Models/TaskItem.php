@@ -18,7 +18,7 @@ class TaskItem extends Model
        return $this->belongsTo(ObjectType::class);
     }
     public function object(){
-       return $this->belongsTo(Object::class);
+       return $this->belongsTo(ObjectM::class);
     }
     public function task(){
        return $this->belongsTo(Task::class);

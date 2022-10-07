@@ -3,14 +3,14 @@
 namespace App\UseCases;
 
 
-use App\Models\Object;
+use App\Models\ObjectM;
 use Illuminate\Http\Request;
 
 class ObjectService
 {
     public function create($request)
     {
-        $object = Object::make($request->only('country_id', 'code', 'object_type_id', 'name', 'address', 'coordination', 'phone', 'mails', 'description'));
+        $object = ObjectM::make($request->only('country_id', 'code', 'object_type_id', 'name', 'address', 'coordination', 'phone', 'mails', 'description'));
         $object->save();
         return $object;
     }
@@ -27,7 +27,7 @@ class ObjectService
     }
     private function getObject($id):Object
     {
-        return Object::findOrFail($id);
+        return ObjectM::findOrFail($id);
     }
 
 }

@@ -15,6 +15,6 @@ class Country extends Model
        return $this->hasMany(TaskItem::class);
     }
     public function objects(){
-      return  $this->hasMany(Object::class);
+      return  $this->hasMany(ObjectM::class);
     }
 }

@@ -6,7 +6,7 @@ namespace App\Http\Controllers\api\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Object\ObjectCreateRequest;
 use App\Http\Requests\Object\ObjectEditRequest;
-use App\Models\Object;
+use App\Models\ObjectM;
 use App\UseCases\ObjectService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -35,9 +35,9 @@ class ObjectController extends Controller
                 $filter[] = AllowedFilter::exact($k);
             }
         }
-        $query = QueryBuilder::for(Object::class);
+        $query = QueryBuilder::for(ObjectM::class);
         if (!empty($request->get('search'))){
-            foreach (Object::SEARCH_ITEMS as $searchItem){
+            foreach (ObjectM::SEARCH_ITEMS as $searchItem){
                 $query->where($searchItem, 'like', '%'.$request->get('search').'%');
             }
         }
@@ -54,7 +54,7 @@ class ObjectController extends Controller
     }
     public function show(Request $request, $id)
     {
-        $object =Object::findOrFail($id);
+        $object =ObjectM::findOrFail($id);
         if (!empty($request->append)) {
             $object->append(explode(',', $request->append));
         }
@@ -67,7 +67,7 @@ class ObjectController extends Controller
     public function update(ObjectEditRequest $request, Object $object)
     {
         $this->service->edit($object->id,$request);
-        return Object::findOrFail($object->id);
+        return ObjectM::findOrFail($object->id);
     }
     public function destroy(Object $object)
     {

@@ -29,7 +29,7 @@ class TaskCreateRequest extends FormRequest
             'assigned.*'=>'required|integer|distinct',
             'targets'=>'nullable|array',
             'targets.*'=>'integer|distinct',
-            'assigned_role'=>'required|array',
+            'assigned_role'=>'nullable|array',
             'assigned_role.*'=>'required|integer|distinct',
             'files'=>'nullable|array',
             'files.*'=>'integer|distinct',

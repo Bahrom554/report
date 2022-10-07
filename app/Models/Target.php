@@ -13,7 +13,7 @@ class Target extends Model
     ];
 
     public function object(){
-       return $this->belongsTo(Object::class);
+       return $this->belongsTo(ObjectM::class);
     }
     public function targetType(){
        return $this->belongsTo(TargetType::class);
