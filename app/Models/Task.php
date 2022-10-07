@@ -16,9 +16,9 @@ class Task extends Model
     ];
 
     public function user(){
-        $this->belongsTo(User::class,'creator','id');
+       return $this->belongsTo(User::class,'creator','id');
     }
     public function taskItems(){
-        $this->hasMany(TaskItem::class);
+       return $this->hasMany(TaskItem::class);
     }
 }

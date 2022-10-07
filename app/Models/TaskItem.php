@@ -12,22 +12,22 @@ class TaskItem extends Model
     ];
 
     public function targetType(){
-        $this->belongsTo(TargetType::class);
+       return $this->belongsTo(TargetType::class);
     }
     public function objectType(){
-        $this->belongsTo(ObjectType::class);
+       return $this->belongsTo(ObjectType::class);
     }
     public function object(){
-        $this->belongsTo(Object::class);
+       return $this->belongsTo(Object::class);
     }
     public function task(){
-        $this->belongsTo(Task::class);
+       return $this->belongsTo(Task::class);
     }
     public function country(){
-        $this->belongsTo(Country::class);
+       return $this->belongsTo(Country::class);
     }
     public function target(){
-        $this->belongsTo(Target::class);
+       return $this->belongsTo(Target::class);
     }
 
 }

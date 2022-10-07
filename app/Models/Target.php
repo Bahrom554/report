@@ -13,23 +13,23 @@ class Target extends Model
     ];
 
     public function object(){
-        $this->belongsTo(Object::class);
+       return $this->belongsTo(Object::class);
     }
     public function targetType(){
-        $this->belongsTo(TargetType::class);
+       return $this->belongsTo(TargetType::class);
     }
     public function objectType(){
-        $this->belongsTo(ObjectType::class);
+       return $this->belongsTo(ObjectType::class);
     }
     public function country(){
-        $this->belongsTo(Country::class);
+       return $this->belongsTo(Country::class);
     }
     public function targets(): HasMany
     {
-        return $this->hasMany(Target::class, 'parent_id','id')->orderBy('sort', 'ASC');
+      return $this->hasMany(Target::class, 'parent_id','id')->orderBy('sort', 'ASC');
     }
     public function taskItems(){
-        $this->hasMany(TaskItem::class);
+       return $this->hasMany(TaskItem::class);
     }
 
 

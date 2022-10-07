@@ -15,16 +15,16 @@ class Object extends Model
     ];
 
     public function country(){
-        $this->belongsTo(Country::class);
+       return $this->belongsTo(Country::class);
     }
     public function objectType(){
-        $this->belongsTo(ObjectType::class);
+       return $this->belongsTo(ObjectType::class);
     }
     public function targets(){
-        $this->hasMany(Target::class);
+       return $this->hasMany(Target::class);
     }
     public function taskItems(){
-        $this->hasMany(TaskItem::class);
+       return $this->hasMany(TaskItem::class);
     }
 
 
