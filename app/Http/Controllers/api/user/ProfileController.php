@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Client;
 
 
-class UserController extends Controller
+class ProfileController extends Controller
 {
     private $service;
 

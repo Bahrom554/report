@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIpsTable extends Migration
+class CreateResultsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,14 @@ class CreateIpsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ips', function (Blueprint $table) {
+        Schema::create('results', function (Blueprint $table) {
             $table->id();
-            $table->string('name',128)->index()->unique();
+            $table->unsignedBigInteger('task_id');
+            $table->unsignedBigInteger('result_type_id');
+            $table->unsignedBigInteger('creator');
+            $table->string('targets');
+            $table->text('description');
+            $table->string('files');
             $table->timestamps();
         });
     }
@@ -27,6 +32,6 @@ class CreateIpsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ips');
+        Schema::dropIfExists('results');
     }
 }

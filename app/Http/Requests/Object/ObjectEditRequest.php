@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Requests\admin;
+namespace App\Http\Requests\Object;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UserEditRequest extends FormRequest
+class ObjectEditRequest extends FormRequest
 {
-
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
 
     /**
      * Get the validation rules that apply to the request.
@@ -24,10 +26,9 @@ class UserEditRequest extends FormRequest
             'object_type_id'=>'nullable|integer|exists:object_types,id',
             'address'=>'nullable|string',
             'coordination'=>'array',
-            'coordination.*'=>'string|distinct|min:3',
-            'phone'=>'array',
-            'mails'=>'array',
-            'description'=>'string'
+            'phone'=>'nullable|array',
+            'mails'=>'nullable|array',
+            'description'=>'nullable|string'
         ];
     }
 }

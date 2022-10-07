@@ -8,29 +8,26 @@ class Object extends Model
 {
     protected $fillable =['name','country_id', 'code','object_type_id','address', 'cordination','phone','description'];
     public const SEARCH_ITEMS =['name','code','address','description'];
+    protected $casts = [
+        'coordination' => 'array',
+        'phone' => 'array',
+        'mails' => 'array',
+    ];
 
-
-    public static function createRules()
-    {
-        return [
-            'name' => 'required|string|max:512',
-            'country_id'=>'nullable|integer',
-             'code'=>'nullable|string',
-             'object_type_id'=>'nullable|integer',
-             'address'=>'nullable|string',
-             'coordination'=>'',
-             'phone'=>'',
-             'mails'=>'',
-             'description'=>'',
-
-
-        ];
+    public function country(){
+        $this->belongsTo(Country::class);
     }
-    public static function UpdateRules()
-    {
-        return [
-            'name' => 'string|required|max:512',
-
-        ];
+    public function objectType(){
+        $this->belongsTo(ObjectType::class);
     }
+    public function targets(){
+        $this->hasMany(Target::class);
+    }
+    public function taskItems(){
+        $this->hasMany(TaskItem::class);
+    }
+
+
+
+
 }

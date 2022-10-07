@@ -9,6 +9,13 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ApiController extends Controller
 {
     public $modelClass;
+    public function __construct()
+    {
+        $this->middleware(['can:adminormanager'], ['except' => [
+            'index',
+            'show',
+        ]]);
+    }
 
     /**
      * @param Request $request
@@ -62,7 +69,10 @@ class ApiController extends Controller
 
     public function store(Request $request)
     {
+
+
         $request->validate($this->modelClass::createRules());
+//        $model = $this->modelClass::firstOrCreate($request->all());
         $model = $this->modelClass::create($request->all());
 
         if (!empty($request->append)) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api\user;
+namespace App\Http\Controllers\api\admin;
 
 use App\Http\Controllers\ApiController;
 use App\Models\TargetType;

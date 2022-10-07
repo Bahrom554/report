@@ -47,5 +47,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('soceng', function (User $user) {
             return $user->isSoceng();
         });
+        Gate::define('adminormanager', function (User $user) {
+            return $user->isAdmin() ||$user->isManager();;
+        });
+
     }
 }

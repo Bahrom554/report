@@ -17,23 +17,30 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware'=>'auth:api'],function () {
     // admin route
     Route::group(['middleware'=>'can:admin','namespace'=>'api\admin'],function (){
-        Route::resource('users','UserController');
-        Route::get('roles','UserController@roles');
-        Route::put('users/{user}/change-password','UserController@changePassword');
+        Route::resource('users','ProfileController');
+        Route::get('roles','ProfileController@roles');
+        Route::put('users/{user}/change-password','ProfileController@changePassword');
+    });
+
+    Route::group(['namespace'=>'api\admin'],function () {
+        Route::resource('country', 'CountryController');
+        Route::resource('object-type', 'ObjectTypeController');
+        Route::resource('target-type', 'TargetTypeController');
+        Route::resource('target', 'TargetController');
+        Route::resource('object', 'ObjectController');
+        Route::resource('task', 'TaskController');
+
     });
     //user route
     Route::group(['namespace'=>'api\user'],function (){
-        Route::get('profile','UserController@show');
-        Route::put('profile','UserController@update');
-        Route::put('profile/change-password','UserController@changePassword');
-
-        Route::resource('country','CountryController');
+        Route::get('profile','ProfileController@show');
+        Route::put('profile','ProfileController@update');
+        Route::put('profile/change-password','ProfileController@changePassword');
         Route::resource('ip','IpController');
-        Route::resource('object-type','ObjectTypeController');
-        Route::resource('target-type','TargetTypeController');
         Route::resource('result-type','ResultTypeController');
-
+        Route::resource('result','ResultController');
     });
+
 });
 Route::post('image','ImageUploadController@store');
 Route::delete('images/{image}','ImageUploadController@delete');
