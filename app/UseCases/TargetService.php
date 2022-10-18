@@ -3,6 +3,7 @@
 namespace App\UseCases;
 
 
+use App\Models\ObjectM;
 use App\Models\Target;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,9 @@ class TargetService
     public function create($request)
 
     {
+        $data=$request->all();
+        $object=ObjectM::findorFail($request->object_id);
+        $data['object_type_id']=$object->object_type_id;
         $target0 = Target::make($request->only( 'target_type_id','object_id','parent_id','country_id','name'));
         if(filter_var($request->name, FILTER_VALIDATE_URL)){
             if($target=Target::where('name',$this->get_fulldomain($request->name))->first()){

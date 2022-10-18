@@ -38,7 +38,7 @@ class ObjectController extends Controller
         $query = QueryBuilder::for(ObjectM::class);
         if (!empty($request->get('search'))){
             foreach (ObjectM::SEARCH_ITEMS as $searchItem){
-                $query->where($searchItem, 'like', '%'.$request->get('search').'%');
+                $query->orWhere($searchItem, 'like', '%'.$request->get('search').'%');
             }
         }
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);

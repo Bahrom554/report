@@ -46,6 +46,8 @@ class TargetController extends Controller
     }
     public function store(TargetCreateRequest $request)
     {
+        $data=$request->all();
+        return $data['object_type_id']; exit();
         return $this->service->create($request);
     }
     public function show(Request $request, $id)
