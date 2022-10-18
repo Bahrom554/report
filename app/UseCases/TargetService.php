@@ -12,9 +12,7 @@ class TargetService
     public function create($request)
 
     {
-        $data=$request->all();
-        $object=ObjectM::findorFail($request->object_id);
-        $data['object_type_id']=$object->object_type_id;
+
         $target0 = Target::make($request->only( 'target_type_id','object_id','parent_id','country_id','name'));
         if(filter_var($request->name, FILTER_VALIDATE_URL)){
             if($target=Target::where('name',$this->get_fulldomain($request->name))->first()){
@@ -33,6 +31,8 @@ class TargetService
                 array_push($option,$request->name);
                 $target0->raw_name=$option;
             }
+        $object=ObjectM::find($request->object_id);
+        $target0->object_type_id=$object->object_type_id;
         $target0->save();
         return $target0;
     }
