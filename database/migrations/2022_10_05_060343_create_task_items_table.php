@@ -15,8 +15,6 @@ class CreateTaskItemsTable extends Migration
     {
         Schema::create('task_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('target_type_id')->nullable();
-            $table->unsignedBigInteger('object_type_id')->nullable();
             $table->unsignedBigInteger('object_id')->nullable();
             $table->unsignedBigInteger('task_id')->nullable();
             $table->unsignedBigInteger('country_id')->nullable();
@@ -25,8 +23,6 @@ class CreateTaskItemsTable extends Migration
             $table->date('deadline');
             $table->json('files')->nullable();
             $table->text('definition')->nullable();
-            $table->foreign('target_type_id')->references('id')->on('target_types')->onDelete('set null');
-            $table->foreign('object_type_id')->references('id')->on('object_types')->onDelete('set null');
             $table->foreign('object_id')->references('id')->on('objects')->onDelete('set null');
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('set null');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');

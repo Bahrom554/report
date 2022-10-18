@@ -22,7 +22,6 @@ class TaskItemCreateRequest extends FormRequest
     {
         return [
             'target_type_id'=>'nullable|integer|exists:target_types,id',
-            'object_type_id'=>'nullable|integer|exists:object_types,id',
             'object_id'=>'nullable|integer|exists:objects,id',
             'task_id'=>'nullable|integer|exists:tasks,id',
             'country_id'=>'nullable|integer|exists:countries,id',

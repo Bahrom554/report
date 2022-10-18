@@ -11,10 +11,7 @@ class ResultCreateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
-    {
-        return false;
-    }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -24,7 +21,12 @@ class ResultCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'task_id'=>'required|integer|exist:tasks,id',
+            'target_id'=>'required|integer|exist:targets,id',
+            'result_type_id'=>'required|integer|exist:result_types,id',
+            'task_item'=>'required|array',
+            'description'=>'required|string',
+            'files'=>'nullable|array'
         ];
     }
 }

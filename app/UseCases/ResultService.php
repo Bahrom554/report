@@ -3,58 +3,35 @@
 namespace App\UseCases;
 
 
+use App\Models\Result;
 use Illuminate\Http\Request;
 
 class ResultService
 {
     public function create($request)
     {
-        $user = User::make($request->only('name', 'username','role'));
-        if($request->has('password')){
-            $user->password = bcrypt($request->password);
-        }
-        $user->save();
-        return $user;
+        $result = Result::make($request->only('task_id', 'task_items','target_id','result_type_id','description','files'));
+
+        $result->save();
+        return $result;
     }
 
     public function edit($id, $request){
-        $user = $this->getUser($id);
-        if($user->role!=User::ROLE_ADMIN){
-            $user->update($request->only([
-                'name',
-                'username',
-                'role',
-
-            ]));
-        }
-
-        return $user;
+        $result = $this->getResult($id);
+        $result->update($request->only('task_id', 'task_items','target_id','result_type_id','description','files'));
+        return $result;
 
     }
-    public function userEdit($id, $request){
-        $user = $this->getUser($id);
-        $user->update($request->only([
-            'name',
-            'username',
-        ]));
-        return $user;
 
-    }
     public function remove($id)
     {
-        $user = $this->getUser($id);
+        $user = $this->getResult($id);
 
         $user->delete();
     }
-    public function resetPassword(Request $request , $id){
-        $user=$this->getUser($id);
-        $user->password = bcrypt($request->password);
-        $user->save();
-        return $user;
-    }
 
-    private function getUser($id):User
+    private function getResult($id):Result
     {
-        return User::findOrFail($id);
+        return Result::findOrFail($id);
     }
 }

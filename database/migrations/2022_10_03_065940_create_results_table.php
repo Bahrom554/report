@@ -16,11 +16,12 @@ class CreateResultsTable extends Migration
         Schema::create('results', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('task_id');
+            $table->json('task_items');
             $table->unsignedBigInteger('result_type_id');
             $table->unsignedBigInteger('creator');
-            $table->string('targets');
+            $table->json('targets');
             $table->text('description');
-            $table->string('files');
+            $table->json('files');
             $table->timestamps();
         });
     }

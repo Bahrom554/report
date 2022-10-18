@@ -11,26 +11,30 @@ class TargetService
     public function create($request)
 
     {
-        if(filter_var($request->name, FILTER_VALIDATE_URL) && $target=Target::where('name',$this->get_domain($request->name))->first()){
-            $option=$target->raw_name ? : [];
-            array_push($option,$request->name);
-            $target->raw_name=$option;
-            $target->save();
-            return $target;
-    }
-        $target = Target::make($request->only( 'target_type_id','object_type_id','object_id','parent_id','country_id','name'));
+        $target0 = Target::make($request->only( 'target_type_id','object_id','parent_id','country_id','name'));
         if(filter_var($request->name, FILTER_VALIDATE_URL)){
-            $target->name=$this->get_domain($request->name);
-            $option=$target->raw_name ? : [];
-            array_push($option,$request->name);
-            $target->raw_name=$option;
-        }
-        $target->save();
-        return $target;
+            if($target=Target::where('name',$this->get_fulldomain($request->name))->first()){
+                $option=$target->raw_name ? : [];
+                array_push($option,$request->name);
+                $target->raw_name=$option;
+                $target->save();
+                return $target;
+            }
+            elseif ($target=Target::where('name',$this->get_domain($request->name))->first()){
+                   $target0->parent_id=$target->id;
+            }
+
+                $target0->name=$this->get_fulldomain($request->name);
+                $option=$target0->raw_name ? : [];
+                array_push($option,$request->name);
+                $target0->raw_name=$option;
+            }
+        $target0->save();
+        return $target0;
     }
     public function edit($id, $request){
         $target = $this->getTarget($id);
-        $target->update($request->only('name', 'target_type_id','object_type_id','object_id','parent_id','country_id'));
+        $target->update($request->only('name', 'target_type_id','object_id','parent_id','country_id'));
         return $target;
     }
     public function remove($id)
@@ -47,5 +51,9 @@ class TargetService
     {
         preg_match("/[a-z0-9\-]{1,63}\.[a-z\.]{2,6}$/", parse_url($url, PHP_URL_HOST), $_domain_tld);
         return $_domain_tld[0];
+    }
+    function get_fulldomain($url) {
+        $host = parse_url($url, PHP_URL_HOST);
+        return preg_replace('/^www\./', '', $host);
     }
 }

@@ -4,19 +4,21 @@ namespace App\UseCases;
 use App\Http\Requests\Task\TaskCreateRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskService
 {
     public function create(TaskCreateRequest $request)
     {
-        $task = Task::make($request->only('start', 'deadline','name','creator','assigned','targets','assigned_role','files'));
+        $task = Task::make($request->only('start', 'deadline','name','assigned','targets','assigned_role','files'));
+        $task->creator=Auth::id();
         $task->save();
         return $task;
     }
 
     public function edit($id, $request){
         $task = $this->getTask($id);
-        $task->update($request->only('start', 'deadline','name','creator','assigned','targets','assigned_role','files'));
+        $task->update($request->only('start', 'deadline','name','assigned','targets','assigned_role','files'));
         return $task;
 
     }

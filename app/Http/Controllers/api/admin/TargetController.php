@@ -46,8 +46,7 @@ class TargetController extends Controller
     }
     public function store(TargetCreateRequest $request)
     {
-        $target=$this->service->create($request);
-        return $target;
+        return $this->service->create($request);
     }
     public function show(Request $request, $id)
     {

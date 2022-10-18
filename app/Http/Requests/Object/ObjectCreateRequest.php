@@ -30,6 +30,7 @@ class ObjectCreateRequest extends FormRequest
             'coordination.*'=>'required|distinct',
             'phone'=>'nullable|array',
              'mails'=>'nullable|array',
+            'mails.*'=>'nullable|email',
              'description'=>'nullable|string'
         ];
     }
