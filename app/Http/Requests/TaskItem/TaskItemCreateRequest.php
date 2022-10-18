@@ -21,11 +21,10 @@ class TaskItemCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'target_type_id'=>'nullable|integer|exists:target_types,id',
+            'target_id'=>'required|integer|exists:targets,id',
             'object_id'=>'nullable|integer|exists:objects,id',
             'task_id'=>'nullable|integer|exists:tasks,id',
             'country_id'=>'nullable|integer|exists:countries,id',
-            'name'=>'required|string',
             'start'=>'required|date',
             'deadline'=>'required|date',
             'files'=>'nullable|array',

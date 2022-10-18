@@ -27,8 +27,7 @@ class CreateTaskItemsTable extends Migration
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('set null');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
             $table->foreign('target_id')->references('id')->on('targets')->onDelete('set null');
-            $table->timestamps();
-        });
+            $table->timestamps();});
     }
 
     /**

@@ -18,9 +18,7 @@ class TaskItemService
 
     public function create($request)
     {
-        $taskItem = TaskItem::make($request->only( 'object_id', 'task_id', 'country_id', 'start', 'deadline', 'files', 'definition'));
-        $target = Target::where('name', $request->name)->first() ?: $this->service->create($request);
-        $taskItem->target_id = $target->id;
+        $taskItem = TaskItem::make($request->only( 'object_id','target_id', 'task_id', 'country_id', 'start', 'deadline', 'files', 'definition'));
         $taskItem->save();
         return $taskItem;
     }
