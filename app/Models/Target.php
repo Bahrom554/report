@@ -24,9 +24,9 @@ class Target extends Model
     public function country(){
        return $this->belongsTo(Country::class);
     }
-    public function targets(): HasMany
+    public function targets()
     {
-      return $this->hasMany(Target::class, 'parent_id','id')->orderBy('sort', 'ASC');
+      return $this->hasMany(Target::class, 'parent_id','id');
     }
     public function taskItems(){
        return $this->hasMany(TaskItem::class);

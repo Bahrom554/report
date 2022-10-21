@@ -55,7 +55,7 @@ class FileService
                 $generatedDTO = $this->generatePath($dto);
                 $generatedDTO->origin_name = $dto->file->getClientOriginalName();
                 $generatedDTO->file_size = $dto->file->getSize();
-                $dto->file->move($generatedDTO->file_folder, $generatedDTO->file_name.'.'.$generatedDTO->file_ext );
+                $dto->file->move($generatedDTO->file_folder, $generatedDTO->file_name);
                 $file = $this->createFileModel($generatedDTO);
 //                $this->createThumbnails($file);
                 DB::commit();
