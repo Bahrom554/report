@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Filemanager\Helpers;
+namespace App\Helpers;
 
 class FilemanagerHelper
 {

@@ -1,5 +1,5 @@
 <?php
-namespace Modules\Filemanager\Dto;
+namespace App\Dto;
 
 use Illuminate\Http\UploadedFile;
 

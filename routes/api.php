@@ -41,8 +41,10 @@ Route::group(['middleware'=>'auth:api'],function () {
         Route::resource('ip','IpController');
         Route::resource('result-type','ResultTypeController');
         Route::resource('result','ResultController');
+        Route::get('/file', 'FilemanagerController@index');
+        Route::delete('file/{id}', 'FilemanagerController@delete');
+        Route::post('file/uploads', 'FilemanagerController@uploads');
     });
 
 });
-Route::post('image','ImageUploadController@store');
-Route::delete('images/{image}','ImageUploadController@delete');
+

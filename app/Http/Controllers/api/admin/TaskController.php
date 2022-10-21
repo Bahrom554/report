@@ -18,11 +18,10 @@ use Spatie\QueryBuilder\QueryBuilder;
 class TaskController extends Controller
 {
     private $service;
-    private $itemService;
-    public function __construct(TaskService $service,TaskItemService $itemService)
+
+    public function __construct(TaskService $service)
     {
         $this->service=$service;
-        $this->itemService=$itemService;
         $this->middleware(['can:adminormanager'], ['except' => [
             'index',
             'show',
