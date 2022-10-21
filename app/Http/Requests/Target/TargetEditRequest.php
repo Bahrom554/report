@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Target;
 
+use App\Models\Target;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TargetEditRequest extends FormRequest
@@ -20,8 +22,9 @@ class TargetEditRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
-            'name'=>'string|unique:targets|max:255',
+            'name'=>'string|max:255|unique:targets,name,'.$this->target->id,
             'target_type_id'=>'nullable|integer|exists:target_types,id',
             'object_id'=>'nullable|integer|exists:objects,id',
             'parent_id'=>'nullable|integer|exists:targets,id',

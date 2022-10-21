@@ -62,8 +62,7 @@ class TargetController extends Controller
 
     public function update(TargetEditRequest $request, Target $target)
     {
-        $this->service->edit($target->id,$request);
-        return Target::findOrFail($target->id);
+        return  $this->service->edit($target,$request);
     }
     public function destroy(Target $target)
     {

@@ -36,8 +36,7 @@ class TargetService
         $target0->save();
         return $target0;
     }
-    public function edit($id, $request){
-        $target = $this->getTarget($id);
+    public function edit(Target $target, $request){
         $target->update($request->only('name', 'target_type_id','object_id','parent_id','country_id'));
         return $target;
     }
