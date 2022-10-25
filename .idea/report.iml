@@ -121,5 +121,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="laravel-lessons" />
+    <orderEntry type="module" module-name="xabarchi" />
   </component>
 </module>
