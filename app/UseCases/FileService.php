@@ -22,6 +22,7 @@ class FileService
     {
         $files = $request->file('files');
 
+
         if (is_array($request->file('files'))) {
 
             if (!in_array($files[0]->extension(), ['txt','JPG','jpeg', 'jpg', 'svg', 'png', 'doc', 'docx', 'xls', 'xlsx', 'pdf'])) {
@@ -32,7 +33,6 @@ class FileService
             foreach ($files as $file) {
                 $dto = new GeneratePathFileDTO();
                 $dto->file = $file;
-                $dto->folder_id = $request->get('folder_id');
                 $response[] = $this->uploadFile($dto);
             }
 
@@ -55,7 +55,7 @@ class FileService
                 $generatedDTO = $this->generatePath($dto);
                 $generatedDTO->origin_name = $dto->file->getClientOriginalName();
                 $generatedDTO->file_size = $dto->file->getSize();
-                $dto->file->move($generatedDTO->file_folder, $generatedDTO->file_name);
+                $dto->file->move($generatedDTO->file_folder, $generatedDTO->file_name . '.' . $generatedDTO->file_ext);
                 $file = $this->createFileModel($generatedDTO);
 //                $this->createThumbnails($file);
                 DB::commit();
@@ -104,18 +104,21 @@ class FileService
         $generatedPathFileDTO->file_ext = $file->getClientOriginalExtension();
         $generatedPathFileDTO->file_path = $path;
         $generatedPathFileDTO->created_at = $created_at;
+
         return $generatedPathFileDTO;
     }
     public function delete(Files $file){
-        if ($file->getIsImage()) {
-            $thumbsImages = FileManagerHelper::getThumbsImage();
-            foreach ($thumbsImages as $thumbsImage) {
-                $slug = $thumbsImage['slug'];
-                unlink($file->folder . '/' . $file->slug . '_' . $slug . '.' . $file->ext);
-             }
-          }
+//        if ($file->getIsImage()) {
+//            $thumbsImages = FileManagerHelper::getThumbsImage();
+//            foreach ($thumbsImages as $thumbsImage) {
+//                $slug = $thumbsImage['slug'];
+//                unlink($file->folder . '/' . $file->slug . '_' . $slug . '.' . $file->ext);
+//             }
+//          }
+//        unlink(storage_path('app/public/static'.'/'.$file->path));
         unlink($file->folder.'/'.$file->file);
     }
+
     private function createFileModel(GeneratedPathFileDTO $generatedDTO)
     {
         $data = [
