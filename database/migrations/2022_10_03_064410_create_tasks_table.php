@@ -21,7 +21,7 @@ class CreateTasksTable extends Migration
             $table->unsignedBigInteger('creator');
             $table->json('assigned');
             $table->json('targets')->nullable();
-            $table->json('assigned_role');
+            $table->json('assigned_role')->nullable();
             $table->json('files')->nullable();
             $table->foreign('creator')->references('id')->on('users');
             $table->timestamps();
