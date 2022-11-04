@@ -64,7 +64,7 @@ class ObjectController extends Controller
         return $object;
     }
 
-    public function update(ObjectEditRequest $request, Object $object)
+    public function update(ObjectEditRequest $request, ObjectM $object)
     {
         $this->service->edit($object->id,$request);
         return ObjectM::findOrFail($object->id);
