@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\api\admin;
 
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Object\ObjectCreateRequest;
-use App\Http\Requests\Object\ObjectEditRequest;
 use App\Models\ObjectM;
-use App\UseCases\ObjectService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Spatie\QueryBuilder\AllowedFilter;
+use App\UseCases\ObjectService;
+use App\Http\Controllers\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use App\Http\Requests\Object\ObjectEditRequest;
+use App\Http\Requests\Object\ObjectCreateRequest;
 
 
 class ObjectController extends Controller
@@ -63,7 +63,14 @@ class ObjectController extends Controller
         }
         return $object;
     }
-
+    
+    /**
+     * update
+     *
+     * @param  mixed $request
+     * @param  mixed $object
+     * @return void
+     */
     public function update(ObjectEditRequest $request, ObjectM $object)
     {
         $this->service->edit($object->id,$request);

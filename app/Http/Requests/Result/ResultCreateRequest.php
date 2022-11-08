@@ -21,10 +21,10 @@ class ResultCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'task_id'=>'required|integer|exist:tasks,id',
-            'target_id'=>'required|integer|exist:targets,id',
-            'result_type_id'=>'required|integer|exist:result_types,id',
-            'task_item'=>'required|array',
+            'task_id'=>'required|integer|exists:tasks,id',
+            'targets'=>'required|array',
+            'result_type_id'=>'required|integer|exists:result_types,id',
+            'task_items'=>'required|array',
             'description'=>'required|string',
             'files'=>'nullable|array'
         ];

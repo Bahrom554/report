@@ -30,4 +30,8 @@ class TaskItem extends Model
        return $this->belongsTo(Target::class);
     }
 
+    public function getFiles0Attribute(){
+      return Files::whereIn('id',$this->files)->get();
+  }
+
 }

@@ -10,15 +10,15 @@ class TaskService
 {
     public function create(TaskCreateRequest $request)
     {
-        $task = Task::make($request->only('start', 'deadline','name','assigned','targets','assigned_role','files'));
-        $task->creator=Auth::id();
+        $task = Task::make($request->only('start', 'deadline','name','assigned','targets','files'));
+        $task->creator=Auth::user()->id;
         $task->save();
         return $task;
     }
 
     public function edit($id, $request){
         $task = $this->getTask($id);
-        $task->update($request->only('start', 'deadline','name','assigned','targets','assigned_role','files'));
+        $task->update($request->only('start', 'deadline','name','assigned','targets','files'));
         return $task;
 
     }

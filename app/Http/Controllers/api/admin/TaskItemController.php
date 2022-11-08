@@ -40,7 +40,6 @@ class TaskItemController extends Controller
         $query = QueryBuilder::for(TaskItem::class);
         if (!empty($request->get('search'))) {
             $query->where('name', 'like', '%' . $request->get('search') . '%');
-
         }
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);

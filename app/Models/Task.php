@@ -11,7 +11,6 @@ class Task extends Model
     protected $casts = [
         'assigned' => 'array',
         'targets' => 'array',
-        'assigned_role' => 'array',
         'files' => 'array',
     ];
 
@@ -23,5 +22,9 @@ class Task extends Model
     }
     public function getMembersAttribute(){
         return User::whereIn('id',$this->assigned)->get();
+    }
+
+    public function getFiles0Attribute(){
+        return Files::whereIn('id',$this->files)->get();
     }
 }

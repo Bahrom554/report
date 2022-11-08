@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\api\admin;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Target\TargetEditRequest;
 use App\Http\Requests\Task\TaskCreateRequest;
@@ -21,7 +22,7 @@ class TaskController extends Controller
 
     public function __construct(TaskService $service)
     {
-        $this->service=$service;
+        $this->service = $service;
         $this->middleware(['can:adminormanager'], ['except' => [
             'index',
             'show',
@@ -37,9 +38,8 @@ class TaskController extends Controller
             }
         }
         $query = QueryBuilder::for(Task::class);
-        if (!empty($request->get('search'))){
-            $query->where('name', 'like', '%'.$request->get('search').'%');
-
+        if (!empty($request->get('search'))) {
+            $query->where('name', 'like', '%' . $request->get('search') . '%');
         }
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
@@ -74,11 +74,11 @@ class TaskController extends Controller
     public function store(TaskCreateRequest $request)
     {
 
-        $task=$this->service->create($request);
-//        $taskItem=$this->itemService->create($request->taskItem);
-//        $taskItem=TaskItem::find($taskItem->id);
-//        $taskItem->task_id=$task->id;
-//        $taskItem->save();
+        $task = $this->service->create($request);
+        //        $taskItem=$this->itemService->create($request->taskItem);
+        //        $taskItem=TaskItem::find($taskItem->id);
+        //        $taskItem->task_id=$task->id;
+        //        $taskItem->save();
         return $task;
     }
 
@@ -89,7 +89,7 @@ class TaskController extends Controller
      */
     public function update(TaskEditRequest $request, Task $task)
     {
-        $this->service->edit($task->id,$request);
+        $this->service->edit($task->id, $request);
         return Task::findOrFail($task->id);
     }
     public function destroy(Task $task)
