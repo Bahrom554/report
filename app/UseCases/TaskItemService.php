@@ -26,7 +26,7 @@ class TaskItemService
     public function edit($id, $request)
     {
         $taskItem = $this->gettaskItem($id);
-        $taskItem->update($request->only( 'object_id', 'task_id', 'country_id', 'start', 'deadline', 'files', 'definition'));
+        $taskItem->update($request->only( 'object_id', 'task_id','target_id', 'country_id', 'start', 'deadline', 'files', 'definition'));
         return $taskItem;
 
     }
