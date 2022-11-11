@@ -13,9 +13,10 @@ class TargetService
 
     {
 
-        $target0 = Target::make($request->only( 'target_type_id','object_id','parent_id','country_id','name'));
+        $target0 = Target::make($request->only( 'target_type_id','object_id','parent_id','name'));
         if(filter_var($request->name, FILTER_VALIDATE_URL)){
             if($target=Target::where('name',$this->get_fulldomain($request->name))->first()){
+              // bor target kelganda yangi target yaralmedi shunchaki raw_name ga qo'shib qo'yiladi
                 $option=$target->raw_name ? : [];
                 array_push($option,$request->name);
                 $target->raw_name=$option;
@@ -31,8 +32,9 @@ class TargetService
                 array_push($option,$request->name);
                 $target0->raw_name=$option;
             }
-        $object=ObjectM::find($request->object_id);
-        $target0->object_type_id=$object->object_type_id;
+        $object=ObjectM::findOrFail($request->object_id);
+        $target0->object_type_id=$object->object_type_id ? : null;
+        $target0->country_id=$object->country_id ? : null;
         $target0->save();
         return $target0;
     }

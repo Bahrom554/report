@@ -20,7 +20,6 @@ class CreateTasksTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('creator');
             $table->json('assigned');
-            $table->json('targets')->nullable();
             $table->json('assigned_role')->nullable();
             $table->json('files')->nullable();
             $table->foreign('creator')->references('id')->on('users');

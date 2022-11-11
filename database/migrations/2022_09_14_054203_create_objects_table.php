@@ -24,7 +24,7 @@ class CreateObjectsTable extends Migration
             $table->json('phone')->nullable();
             $table->json('mails')->nullable();
             $table->text('description')->nullable();
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
             $table->foreign('object_type_id')->references('id')->on('object_types')->onDelete('set null');
             $table->timestamps();
         });

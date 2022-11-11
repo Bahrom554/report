@@ -30,6 +30,7 @@ Route::group(['middleware'=>'auth:api'],function () {
         Route::resource('object', 'ObjectController');
         Route::resource('task', 'TaskController');
         Route::resource('task-item', 'TaskItemController');
+        Route::get('report','ReportController@index');
 
 
     });

@@ -27,8 +27,6 @@ class TaskEditRequest extends FormRequest
             'creator'=>'integer|exists:users,id',
             'assigned'=>'array',
             'assigned.*'=>'integer|distinct',
-            'targets'=>'nullable|array',
-            'targets.*'=>'nullable|integer|distinct',
             'assigned_role'=>'array',
             'assigned_role.*'=>'integer|distinct',
             'files'=>'array',

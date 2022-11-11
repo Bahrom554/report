@@ -26,7 +26,6 @@ class TargetCreateRequest extends FormRequest
                   'target_type_id'=>'nullable|integer|exists:target_types,id',
                   'object_id'=>'nullable|integer|exists:objects,id',
                   'parent_id'=>'nullable|integer|exists:targets,id',
-                  'country_id'=>'nullable|integer|exists:countries,id',
                    'raw_name'=>'nullable|array',
         ];
     }

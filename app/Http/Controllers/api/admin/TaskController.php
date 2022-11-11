@@ -75,10 +75,6 @@ class TaskController extends Controller
     {
 
         $task = $this->service->create($request);
-        //        $taskItem=$this->itemService->create($request->taskItem);
-        //        $taskItem=TaskItem::find($taskItem->id);
-        //        $taskItem->task_id=$task->id;
-        //        $taskItem->save();
         return $task;
     }
 
