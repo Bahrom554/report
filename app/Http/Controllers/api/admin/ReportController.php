@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\api\admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Report\ReportCreateRequest;
-use App\Http\Requests\Report\ReportEditRequest;
 use App\Models\Report;
-use App\UseCases\ReportService;
+use App\Models\Task;
+use App\Models\TaskItem;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
@@ -14,61 +14,45 @@ use Illuminate\Http\Response;
 
 class ReportController extends Controller
 {
-    private $service;
-    public function __construct(ReportService $service)
+
+    public function __construct()
     {
-        $this->service=$service;
-        $this->middleware(['can:adminormanager'], ['except' => [
-            'index',
-            'show',
-        ]]);
+        $this->middleware(['can:adminormanager']);
     }
 
-    public function index(Request $request)
-    {
-        $filters = $request->get('filter');
-        $filter = [];
-        if (!empty($filters)) {
-            foreach ($filters as $k => $item) {
-                $filter[] = AllowedFilter::exact($k);
-            }
-        }
-        $query = QueryBuilder::for(Report::class);
-        if (!empty($request->get('search'))){
-            $query->where('name', 'like', '%'.$request->get('search').'%');
+   public function userReport(Request $request){
+       $filters = $request->get('filter');
+       $filter = [];
+       if (!empty($filters)) {
+           foreach ($filters as $k => $item) {
+               $filter[] = AllowedFilter::exact($k);
+           }
+       }
+       $taskItems=DB::table('tasks')->join('task_items', 'tasks.id', '=', 'task_items.task_id')->select('task_items.id');
+       $taskItems->whereJsonContains('tasks.assigned',(int)$request->user);
+       $taskItems->orwhereBetween('tasks.start',[$request->start,$request->end])->orWhereBetween('tasks.deadline',[$request->start,$request->end]);
+       $taskItems->orwhereBetween('task_items.start',[$request->start,$request->end])->orWhereBetween('task_items.deadline',[$request->start,$request->end]);
+//       $taskItems->allowedFilters($filter);
+       $ids=$taskItems->get();
+       $taskItems=TaskItem::whereIn('id',$ids)->get();
+       return $taskItems;
+   }
 
-        }
-        $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
-        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
-        $query->allowedFilters($filter);
-        $query->allowedSorts($request->sort);
-        return $query->paginate($request->per_page);
-    }
-    public function store(ReportCreateRequest $request)
-    {
-        return $this->service->create($request);
-    }
-    public function show(Request $request, $id)
-    {
-        $Report =Report::findOrFail($id);
-        if (!empty($request->append)) {
-            $Report->append(explode(',', $request->append));
-        }
-        if (!empty($request->include)) {
-            $Report->load(explode(',', $request->include));
-        }
-        return $Report;
-    }
+   public function roleReport(Request $request){
 
-    public function update(ReportEditRequest $request, Report $Report)
-    {
-        return  $this->service->edit($Report,$request);
-    }
-    public function destroy(Report $Report)
-    {
-        $this->service->remove($Report->id);
-        return response()->json([], Response::HTTP_NO_CONTENT);
-    }
+   }
+
+   public function targetReport(Request $request){
+
+       $tasks=Task::all()->with('taskItem');
+       return $tasks;
+   }
+
+   public function objectReport(Request $request){
+
+
+
+   }
 
 
 }

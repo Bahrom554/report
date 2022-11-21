@@ -22,9 +22,7 @@ class TaskItemEditRequest extends FormRequest
     {
         return [
             'target_id'=>'nullable|integer|exists:targets,id',
-            'object_id'=>'nullable|integer|exists:objects,id',
             'task_id'=>'nullable|integer|exists:tasks,id',
-            'country_id'=>'nullable|integer|exists:countries,id',
             'start'=>'date',
             'deadline'=>'date',
             'files'=>'nullable|array',

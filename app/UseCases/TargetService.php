@@ -12,7 +12,6 @@ class TargetService
     public function create($request)
 
     {
-
         $target0 = Target::make($request->only( 'target_type_id','object_id','parent_id','name'));
         if(filter_var($request->name, FILTER_VALIDATE_URL)){
             if($target=Target::where('name',$this->get_fulldomain($request->name))->first()){
@@ -39,7 +38,12 @@ class TargetService
         return $target0;
     }
     public function edit(Target $target, $request){
-        $target->update($request->only('name', 'target_type_id','object_id','parent_id','country_id'));
+        if($request->has('object_id')){
+            $object=ObjectM::findOrFail($request->object_id);
+            $request['country_id']=$object->country_id;
+            $request['object_type_id']=$object->object_type_id;
+        }
+        $target->update($request->only('name','target_type_id','object_id','parent_id','country_id','object_type_id'));
         return $target;
     }
     public function remove($id)

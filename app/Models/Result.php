@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Result extends Model
 {
-   protected $fillable =['task_id','targets','task_items','creator','result_type_id','description','files'];
+   protected $fillable =['task_item_id','target_id','creator','result_type_id','description','files'];
 
-   public function task(){
+   public function taskItem(){
       return $this->belongsTo(Task::class);
    }
    public function target(){
@@ -26,16 +26,9 @@ class Result extends Model
    public function getFiles0Attribute(){
     return Files::whereIn('id',$this->files)->get();
    }
-   public function getTaskItems0Attribute(){
-    return TaskItem::whereIn('id',$this->task_items)->get();
-}
-public function getTargets0Attribute(){
-    return Target::whereIn('id',$this->targets)->get();
-}
+
 protected $casts = [
-    'task_items' => 'array',
-    'targets' => 'array',
-    'files' => 'array',
+    'files' => 'array'
 ];
 
 

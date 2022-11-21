@@ -19,8 +19,8 @@ class TargetController extends Controller
     {
         $this->service=$service;
         $this->middleware(['can:adminormanager'], ['except' => [
-            'index',
             'show',
+            'store'
         ]]);
     }
 

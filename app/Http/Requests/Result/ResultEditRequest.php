@@ -21,10 +21,9 @@ class ResultEditRequest extends FormRequest
     public function rules()
     {
         return [
-            'task_id'=>'integer|exist:tasks,id',
-            'target_id'=>'integer|exist:targets,id',
-            'result_type_id'=>'integer|exist:result_types,id',
-            'task_item'=>'array',
+            'task_item_id'=>'nullable|integer|exists:task_items,id',
+            'target_id'=>'nullable|integer|exists:targets,id',
+            'result_type_id'=>'integer|exists:result_types,id',
             'description'=>'string',
             'files'=>'nullable|array'
         ];

@@ -10,13 +10,8 @@ class TaskItem extends Model
     protected $casts = [
         'files' => 'array',
     ];
+    protected $with=['target'];
 
-    public function targetType(){
-       return $this->belongsTo(TargetType::class);
-    }
-    public function objectType(){
-       return $this->belongsTo(ObjectType::class);
-    }
     public function object(){
        return $this->belongsTo(ObjectM::class);
     }

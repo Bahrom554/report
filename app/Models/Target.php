@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Target extends Model
 {
-    protected $fillable =['name','target_type_id','object_id','parent_id', 'country_id','raw_name'];
+    protected $fillable =['name','target_type_id','object_id','parent_id','object_type_id','country_id','raw_name'];
     protected $casts = [
         'raw_name' => 'array',
     ];
-   protected $with=['targetType'];
+   protected $with=['targetType','object'];
     public function object(){
        return $this->belongsTo(ObjectM::class);
     }

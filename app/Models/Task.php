@@ -12,10 +12,13 @@ class Task extends Model
         'assigned' => 'array',
         'files' => 'array',
     ];
+    protected $with=['user'];
+
 
     public function user(){
        return $this->belongsTo(User::class,'creator','id');
     }
+
     public function taskItems(){
        return $this->hasMany(TaskItem::class);
     }

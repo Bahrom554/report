@@ -18,7 +18,10 @@ class TaskItemService
 
     public function create($request)
     {
-        $taskItem = TaskItem::make($request->only( 'object_id','target_id', 'task_id', 'country_id', 'start', 'deadline', 'files', 'definition'));
+        $taskItem = TaskItem::make($request->only( 'target_id', 'task_id', 'start', 'deadline', 'files', 'definition'));
+        $target=Target::findOrFail($request->target_id);
+        $taskItem->country_id=$target->country_id;
+        $taskItem->object_id=$target->object_id;
         $taskItem->save();
         return $taskItem;
     }
@@ -26,7 +29,11 @@ class TaskItemService
     public function edit($id, $request)
     {
         $taskItem = $this->gettaskItem($id);
-        $taskItem->update($request->only( 'object_id', 'task_id','target_id', 'country_id', 'start', 'deadline', 'files', 'definition'));
+        $target=Target::findOrFail($request->target_id);
+        $data=$request->only( 'task_id','target_id', 'start', 'deadline', 'files', 'definition');
+        $data['object_id']=$target->object_id;
+        $data['country_id']=$target->country_id;
+        $taskItem->update($data);
         return $taskItem;
 
     }

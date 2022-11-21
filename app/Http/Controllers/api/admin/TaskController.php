@@ -9,10 +9,12 @@ use App\Http\Requests\Task\TaskEditRequest;
 use App\Models\Target;
 use App\Models\Task;
 use App\Models\TaskItem;
+use App\Models\User;
 use App\UseCases\TaskItemService;
 use App\UseCases\TaskService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -29,6 +31,7 @@ class TaskController extends Controller
         ]]);
     }
     public function index(Request $request)
+
     {
         $filters = $request->get('filter');
         $filter = [];
@@ -41,6 +44,9 @@ class TaskController extends Controller
         if (!empty($request->get('search'))) {
             $query->where('name', 'like', '%' . $request->get('search') . '%');
         }
+         if(!(Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER)){
+             $query->whereJsonContains('assigned',(int)Auth::user()->id);
+         }
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedFilters($filter);
@@ -55,7 +61,11 @@ class TaskController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $task = Task::findOrFail($id);
+        $query = QueryBuilder::for(Task::class);
+        if(!(Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER)) {
+           $query->whereJsonContains('assigned', (int)Auth::user()->id)->get();
+        }
+         $task=$query->findOrFail($id);
         if (!empty($request->append)) {
             $task->append(explode(',', $request->append));
         }
