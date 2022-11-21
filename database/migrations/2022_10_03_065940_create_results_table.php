@@ -15,7 +15,7 @@ class CreateResultsTable extends Migration
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('task_items')->nullable();
+            $table->unsignedBigInteger('task_item_id')->nullable();
             $table->unsignedBigInteger('result_type_id')->nullable();
             $table->unsignedBigInteger('creator');
             $table->unsignedBigInteger('target_id')->nullable();

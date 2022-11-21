@@ -61,7 +61,9 @@ class TaskItemController extends Controller
         if (!empty($request->include)) {
             $task->load(explode(',', $request->include));
         }
-        return $task;
+
+
+        return $task->Task->id;
     }
 
     /**

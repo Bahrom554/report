@@ -30,8 +30,8 @@ class ReportController extends Controller
        }
        $taskItems=DB::table('tasks')->join('task_items', 'tasks.id', '=', 'task_items.task_id')->select('task_items.id');
        $taskItems->whereJsonContains('tasks.assigned',(int)$request->user);
-       $taskItems->orwhereBetween('tasks.start',[$request->start,$request->end])->orWhereBetween('tasks.deadline',[$request->start,$request->end]);
-       $taskItems->orwhereBetween('task_items.start',[$request->start,$request->end])->orWhereBetween('task_items.deadline',[$request->start,$request->end]);
+//       $taskItems->orwhereBetween('tasks.start',[$request->start,$request->end])->orWhereBetween('tasks.deadline',[$request->start,$request->end]);
+//       $taskItems->orwhereBetween('task_items.start',[$request->start,$request->end])->orWhereBetween('task_items.deadline',[$request->start,$request->end]);
 //       $taskItems->allowedFilters($filter);
        $ids=$taskItems->get();
        $taskItems=TaskItem::whereIn('id',$ids)->get();
