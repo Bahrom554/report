@@ -10,7 +10,7 @@ class TaskItem extends Model
     protected $casts = [
         'files' => 'array',
     ];
-    protected $with=['target','results'];
+    protected $with=['target','results','user'];
 
     public function results(){
         return $this->hasMany(Result::class,'task_item_id','id');
