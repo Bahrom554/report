@@ -7,6 +7,7 @@ use App\Http\Requests\TaskItem\TaskItemCreateRequest;
 use App\Http\Requests\TaskItem\TaskItemEditRequest;
 use App\Models\Task;
 use App\Models\TaskItem;
+use App\Models\User;
 use App\UseCases\TaskItemService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -42,7 +43,10 @@ class TaskItemController extends Controller
         if (!empty($request->get('search'))) {
             $query->where('name', 'like', '%' . $request->get('search') . '%');
         }
-        $query->where('user_id',Auth::user()->id);
+        if((!Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER) ){
+            $query->where('user_id',Auth::user()->id);
+        }
+
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedFilters($filter);
@@ -64,7 +68,7 @@ class TaskItemController extends Controller
         if (!empty($request->include)) {
             $taskItem->load(explode(',', $request->include));
         }
-          if(Auth::user()->id==$taskItem->user_id){
+          if(Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER ||Auth::user()->id==$taskItem->user_id){
               return $taskItem;
           }
 
