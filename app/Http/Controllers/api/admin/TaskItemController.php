@@ -93,8 +93,8 @@ class TaskItemController extends Controller
      */
     public function update(TaskItemEditRequest $request, TaskItem $taskItem)
     {
-        $this->service->edit($taskItem->id, $request);
-        return Task::findOrFail($taskItem->id);
+        $this->service->edit($taskItem, $request);
+        return TaskItem::findOrFail($taskItem->id);
     }
 
     public function destroy(TaskItem $taskItem)

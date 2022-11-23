@@ -26,13 +26,14 @@ class TaskItemService
         return $taskItem;
     }
 
-    public function edit($id, $request)
+    public function edit(TaskItem $taskItem, $request)
     {
-        $taskItem = $this->gettaskItem($id);
-        $target=Target::findOrFail($request->target_id);
         $data=$request->only( 'task_id','target_id','user_id', 'start', 'deadline', 'files', 'definition');
-        $data['object_id']=$target->object_id;
-        $data['country_id']=$target->country_id;
+        if($request->has('target_id')){
+            $target=Target::findOrFail($request->target_id);
+            $data['object_id']=$target->object_id;
+            $data['country_id']=$target->country_id;
+        }
         $taskItem->update($data);
         return $taskItem;
 
