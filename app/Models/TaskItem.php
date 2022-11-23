@@ -11,6 +11,7 @@ class TaskItem extends Model
         'files' => 'array',
     ];
     protected $with=['target','results','user'];
+    protected $appends=['files0'];
 
     public function results(){
         return $this->hasMany(Result::class,'task_item_id','id');
