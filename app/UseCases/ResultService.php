@@ -15,7 +15,7 @@ class ResultService
         $result = Result::make($request->only( 'task_item_id','target_id','result_type_id','description','files'));
         if($request->has('task_item_id')){
             $taskItem=TaskItem::findOrFail($request->task_item_id);
-            $taskItem->status=$request->status;
+            $taskItem->status=$request->status ? : "waiting";
             $result->target_id=$taskItem->target_id;
             $taskItem->save();
         }
@@ -27,6 +27,7 @@ class ResultService
     public function edit($id, $request){
         $result = $this->getResult($id);
         $result->update($request->only('task_item_id','target_id','result_type_id','description','files'));
+        $result = $this->getResult($id);
         if ($result->taskItem !== null){
             $result->taskItem->update($request->only('status'));
         }
@@ -37,9 +38,11 @@ class ResultService
 
     public function remove($id)
     {
-        $user = $this->getResult($id);
-
-        $user->delete();
+        $result = $this->getResult($id);
+        if ($result->taskItem !== null){
+            $result->taskItem->status="waiting";
+        }
+        $result->delete();
     }
 
     private function getResult($id):Result

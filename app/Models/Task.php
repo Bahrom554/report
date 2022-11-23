@@ -12,7 +12,7 @@ class Task extends Model
         'assigned' => 'array',
         'files' => 'array',
     ];
-    protected $with=['user'];
+
 
 
     public function user(){
@@ -22,6 +22,7 @@ class Task extends Model
     public function taskItems(){
        return $this->hasMany(TaskItem::class);
     }
+
     public function getMembersAttribute(){
         return User::whereIn('id',$this->assigned)->get();
     }

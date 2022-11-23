@@ -60,14 +60,14 @@ class ResultController extends Controller
         return $result;
     }
 
-    public function update(ResultEditRequest $request, Result $target)
+    public function update(ResultEditRequest $request, Result $result)
     {
-        $this->service->edit($target->id, $request);
-        return Result::findOrFail($target->id);
+        $this->service->edit($result->id, $request);
+        return Result::findOrFail($result->id);
     }
-    public function destroy(Result $target)
+    public function destroy(Result $result)
     {
-        $this->service->remove($target->id);
+        $this->service->remove($result->id);
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 }

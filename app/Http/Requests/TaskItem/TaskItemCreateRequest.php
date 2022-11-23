@@ -23,6 +23,7 @@ class TaskItemCreateRequest extends FormRequest
         return [
             'target_id'=>'required|integer|exists:targets,id',
             'task_id'=>'nullable|integer|exists:tasks,id',
+            'user_id'=>'nullable|integer|exists:users,id',
             'start'=>'required|date',
             'deadline'=>'required|date',
             'files'=>'nullable|array',

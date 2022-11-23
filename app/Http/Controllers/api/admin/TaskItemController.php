@@ -10,6 +10,7 @@ use App\Models\TaskItem;
 use App\UseCases\TaskItemService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -22,7 +23,8 @@ class TaskItemController extends Controller
         $this->service = $service;
 
         $this->middleware(['can:adminormanager'], ['except' => [
-            'show'
+            'show',
+            'index'
         ]]);
     }
 
@@ -40,6 +42,7 @@ class TaskItemController extends Controller
         if (!empty($request->get('search'))) {
             $query->where('name', 'like', '%' . $request->get('search') . '%');
         }
+        $query->where('user_id',Auth::user()->id);
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedFilters($filter);
@@ -54,16 +57,17 @@ class TaskItemController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $task = TaskItem::findOrFail($id);
+        $taskItem = TaskItem::findOrFail($id);
         if (!empty($request->append)) {
-            $task->append(explode(',', $request->append));
+            $taskItem->append(explode(',', $request->append));
         }
         if (!empty($request->include)) {
-            $task->load(explode(',', $request->include));
+            $taskItem->load(explode(',', $request->include));
         }
+          if(Auth::user()->id==$taskItem->user_id){
+              return $taskItem;
+          }
 
-
-        return $task->Task->id;
     }
 
     /**

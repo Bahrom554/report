@@ -6,15 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaskItem extends Model
 {
-    protected $fillable =[ 'object_id','task_id','country_id','start','deadline','target_id','files','definition'];
+    protected $fillable =[ 'object_id','user_id','task_id','country_id','start','deadline','target_id','files','definition'];
     protected $casts = [
         'files' => 'array',
     ];
-    protected $with=['target'];
+    protected $with=['target','results'];
 
+    public function results(){
+        return $this->hasMany(Result::class,'task_item_id','id');
+    }
     public function object(){
        return $this->belongsTo(ObjectM::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
     public function task(){
        return $this->belongsTo(Task::class);
     }

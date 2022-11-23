@@ -19,6 +19,7 @@ class CreateTaskItemsTable extends Migration
             $table->unsignedBigInteger('task_id')->nullable();
             $table->unsignedBigInteger('country_id')->nullable();
             $table->unsignedBigInteger('target_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->date('start');
             $table->date('deadline');
             $table->json('files')->nullable();
@@ -28,7 +29,7 @@ class CreateTaskItemsTable extends Migration
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('set null');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
             $table->foreign('target_id')->references('id')->on('targets')->onDelete('set null');
-
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
 
         });
