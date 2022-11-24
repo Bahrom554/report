@@ -10,11 +10,11 @@ class TaskItem extends Model
     protected $casts = [
         'files' => 'array',
     ];
-    protected $with=['target','results','user'];
+    protected $with=['target','result','user'];
     protected $appends=['files0'];
 
-    public function results(){
-        return $this->hasMany(Result::class,'task_item_id','id');
+    public function result(){
+        return $this->hasone(Result::class,'task_item_id','id');
     }
     public function object(){
        return $this->belongsTo(ObjectM::class);
