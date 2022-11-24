@@ -8,7 +8,11 @@ class Result extends Model
 {
    protected $fillable =['task_item_id','target_id','creator','result_type_id','description','files'];
 
-   public function taskItem(){
+    protected $with=['resultType'];
+    protected $appends=['files0'];
+
+
+    public function taskItem(){
       return $this->belongsTo(TaskItem::class);
    }
    public function target(){
