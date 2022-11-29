@@ -26,19 +26,22 @@ class ReportController extends Controller
     public function userReport(Request $request)
     {
         $query = QueryBuilder::for(Task::class);
-        $query->whereJsonContains('assigned', (int)$request->user);
-        $query->when($request->has('start', 'end'),function ($q) use ($request) {
+        $query->when($request->has('user'), function ($q) use ($request) {
+            $q->whereJsonContains('assigned', (int)$request->user);
+        });
+        $query->when($request->has('start', 'end'), function ($q) use ($request) {
             $q->whereBetween('start', [$request->start, $request->end]);
             $q->orwhereBetween('deadline', [$request->start, $request->end]);
             $q->orWhere(function ($sq) use ($request) {
                 $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
             });
         });
-        $tasks = $query->get();
+        $tasks = $query->paginate(15);
         foreach ($tasks as $task) {
-            $task->user = User::findOrFail($request->user)->name;
-            $task->items = $task->taskItems()->where('user_id', (int)$request->user)
-                ->when($request->has('start', 'end'),function ($q) use ($request) {
+            $task->items = $task->taskItems()->when($request->has('user'), function ($q) use ($request) {
+                $q->where('user_id', (int)$request->user);
+            })
+                ->when($request->has('start', 'end'), function ($q) use ($request) {
                     $q->whereBetween('start', [$request->start, $request->end])
                         ->orwhereBetween('deadline', [$request->start, $request->end])
                         ->orWhere(function ($sq) use ($request) {
