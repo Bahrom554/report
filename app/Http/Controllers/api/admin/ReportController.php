@@ -26,7 +26,7 @@ class ReportController extends Controller
     public function userReport(Request $request)
     {
         $query = QueryBuilder::for(Task::class);
-        $query->when($request->has('user'), function ($q) use ($request) {
+        $query->when($request->filled('user'), function ($q) use ($request) {
             $q->whereJsonContains('assigned', (int)$request->user);
         });
         $query->when($request->has('start', 'end'), function ($q) use ($request) {
@@ -68,45 +68,13 @@ class ReportController extends Controller
 
     public function objectReport(Request $request)
     {
-        $all = Task::when($request->has('start', 'end'), function ($q) use ($request) {
-            $q->whereBetween('start', [$request->start, $request->end])
-                ->orwhereBetween('deadline', [$request->start, $request->end])
-                ->orWhere(function ($sq) use ($request) {
-                    $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
-                });
-        })->get();
-
-        $tasks = [];
-
-        foreach ($all as $task) {
-            $t = 0;
-            foreach ($task->taskItems()->get() as $tasItem) {
-                if ($tasItem->object_id == $request->object_id) {
-                    $t = 1;
-                }
-            }
-            if ($t) {
-                $tasks[] = $task;
-            }
+        $targets=Target::where('object_id',$request->object)->get();
+        foreach ($targets as $target) {
+            $target->results = $target->results()->when($request->has('start', 'end'), function ($q) use ($request) {
+                    $q->whereBetween('created_at', [$request->start, $request->end]);
+                 })->get();
         }
-
-        foreach ($tasks as $task) {
-            $task->items = $task->taskItems()->where('object_id', (int)$request->object_id)
-                ->when($request->has('start', 'end'), function ($q) use ($request) {
-                    $q->whereBetween('start', [$request->start, $request->end])
-                        ->orwhereBetween('deadline', [$request->start, $request->end])
-                        ->orWhere(function ($sq) use ($request) {
-                            $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
-                        });
-                })->when($request->filled('filter'), function ($query) use ($request) {
-                    [$criteria, $value] = explode(':', $request->filter);
-                    return $query->where($criteria, $value);
-                })
-                ->get();
-        }
-
-        return $tasks;
-
+        return $targets;
 
     }
 

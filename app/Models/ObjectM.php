@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ObjectM extends Model
 {
     protected $table='objects';
-    protected $fillable =['name','country_id', 'code','object_type_id','address', 'coordination','phone','description'];
+    protected $fillable =['name','country_id', 'code','object_type_id','mails','address', 'coordination','phone','description'];
     public const SEARCH_ITEMS =['name','code','address','description'];
     protected $casts = [
         'coordination' => 'array',
