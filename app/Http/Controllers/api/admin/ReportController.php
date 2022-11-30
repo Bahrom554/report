@@ -26,27 +26,34 @@ class ReportController extends Controller
     public function userReport(Request $request)
     {
         $query = QueryBuilder::for(Task::class);
-        $query->when($request->filled('user'), function ($q) use ($request) {
-            $q->whereJsonContains('assigned', (int)$request->user);
-        });
-        $query->when($request->has('start', 'end'), function ($q) use ($request) {
-            $q->whereBetween('start', [$request->start, $request->end]);
-            $q->orwhereBetween('deadline', [$request->start, $request->end]);
-            $q->orWhere(function ($sq) use ($request) {
-                $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
+
+        if ($value = $request->user) {
+            $query->whereJsonContains('assigned', (int)$value);
+        }
+
+        if ($request->has('start') && $request->has('end')) {
+            $query->where(function ($q) use ($request) {
+                $q->whereBetween('start', [$request->start, $request->end]);
+                $q->orwhereBetween('deadline', [$request->start, $request->end]);
+                $q->orWhere(function ($sq) use ($request) {
+                    $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
+                });
             });
-        });
+
+        }
         $tasks = $query->paginate(15);
         foreach ($tasks as $task) {
             $task->items = $task->taskItems()->when($request->has('user'), function ($q) use ($request) {
                 $q->where('user_id', (int)$request->user);
             })
                 ->when($request->has('start', 'end'), function ($q) use ($request) {
-                    $q->whereBetween('start', [$request->start, $request->end])
-                        ->orwhereBetween('deadline', [$request->start, $request->end])
-                        ->orWhere(function ($sq) use ($request) {
-                            $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
-                        });
+                    $q->where(function ($query) use ($request) {
+                        $query->whereBetween('start', [$request->start, $request->end])
+                            ->orwhereBetween('deadline', [$request->start, $request->end])
+                            ->orWhere(function ($sq) use ($request) {
+                                $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
+                            });
+                    });
                 })->when($request->filled('filter'), function ($query) use ($request) {
                     [$criteria, $value] = explode(':', $request->filter);
                     return $query->where($criteria, $value);
@@ -59,20 +66,21 @@ class ReportController extends Controller
 
     public function targetReport(Request $request)
     {
-        $target=Target::findOrFail($request->target);
-        $target->results=$target->results()->when($request->has('start', 'end'), function ($q) use ($request) {
-            $q->whereBetween('created_at', [$request->start, $request->end]); })->get();
-         return $target;
+        $target = Target::findOrFail($request->target);
+        $target->results = $target->results()->when($request->has('start', 'end'), function ($q) use ($request) {
+            $q->whereBetween('created_at', [$request->start, $request->end]);
+        })->get();
+        return $target;
 
     }
 
     public function objectReport(Request $request)
     {
-        $targets=Target::where('object_id',$request->object)->get();
+        $targets = Target::where('object_id', $request->object)->get();
         foreach ($targets as $target) {
             $target->results = $target->results()->when($request->has('start', 'end'), function ($q) use ($request) {
-                    $q->whereBetween('created_at', [$request->start, $request->end]);
-                 })->get();
+                $q->whereBetween('created_at', [$request->start, $request->end]);
+            })->get();
         }
         return $targets;
 

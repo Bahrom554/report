@@ -15,7 +15,7 @@ class ObjectM extends Model
         'mails' => 'array',
     ];
 
-    protected $with =['objectType','country'];
+//    protected $with =['objectType','country'];
     public function country(){
        return $this->belongsTo(Country::class);
     }
@@ -23,7 +23,7 @@ class ObjectM extends Model
        return $this->belongsTo(ObjectType::class);
     }
     public function targets(){
-       return $this->hasMany(Target::class);
+       return $this->hasMany(Target::class,'object_id','id');
     }
     public function taskItems(){
        return $this->hasMany(TaskItem::class);

@@ -10,7 +10,7 @@ class TaskItem extends Model
     protected $casts = [
         'files' => 'array',
     ];
-    protected $with=['target','result','user'];
+//    protected $with=['target','result','user'];
     protected $appends=['files0'];
 
     public function result(){

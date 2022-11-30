@@ -11,7 +11,7 @@ class Target extends Model
     protected $casts = [
         'raw_name' => 'array',
     ];
-   protected $with=['targetType','object'];
+//   protected $with=['targetType','object'];
     public function object(){
        return $this->belongsTo(ObjectM::class);
     }

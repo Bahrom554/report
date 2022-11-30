@@ -8,7 +8,7 @@ class Result extends Model
 {
    protected $fillable =['task_item_id','target_id','creator','result_type_id','description','files'];
 
-    protected $with=['resultType'];
+//    protected $with=['resultType'];
     protected $appends=['files0'];
 
 
