@@ -58,7 +58,7 @@ class ReportController extends Controller
 
 
     public function targetReport(Request $request)
-    {
+    {      
 
         $all = Task::when($request->has('start', 'end'), function ($q) use ($request) {
             $q->whereBetween('start', [$request->start, $request->end])

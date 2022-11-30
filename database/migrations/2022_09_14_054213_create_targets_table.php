@@ -21,6 +21,7 @@ class CreateTargetsTable extends Migration
             $table->unsignedBigInteger('object_id')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->unsignedBigInteger('country_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->json('raw_name')->nullable();
             $table->foreign('target_type_id')->references('id')->on('target_types')->onDelete('set null');
             $table->foreign('object_type_id')->references('id')->on('object_types')->onDelete('set null');

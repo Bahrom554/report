@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\api\admin;
+namespace App\Http\Controllers\api\user;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Target\TargetCreateRequest;
 use App\Http\Requests\Target\TargetEditRequest;
 use App\Models\Target;
 use App\UseCases\TargetService;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TargetController extends Controller
 {
@@ -18,10 +18,7 @@ class TargetController extends Controller
     public function __construct(TargetService $service)
     {
         $this->service=$service;
-        $this->middleware(['can:adminormanager'], ['except' => [
-            'show',
-            'store'
-        ]]);
+
     }
 
     public function index(Request $request)

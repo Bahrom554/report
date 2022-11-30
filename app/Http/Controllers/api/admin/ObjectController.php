@@ -63,7 +63,7 @@ class ObjectController extends Controller
         }
         return $object;
     }
-    
+
     /**
      * update
      *
@@ -76,7 +76,7 @@ class ObjectController extends Controller
         $this->service->edit($object->id,$request);
         return ObjectM::findOrFail($object->id);
     }
-    public function destroy(Object $object)
+    public function destroy(ObjectM $object)
     {
         $this->service->remove($object->id);
         return response()->json([], Response::HTTP_NO_CONTENT);
