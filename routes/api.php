@@ -26,7 +26,6 @@ Route::group(['middleware'=>'auth:api'],function () {
         Route::resource('country', 'CountryController');
         Route::resource('object-type', 'ObjectTypeController');
         Route::resource('target-type', 'TargetTypeController');
-        Route::resource('target', 'TargetController');
         Route::resource('object', 'ObjectController');
         Route::resource('task', 'TaskController');
         Route::resource('task-item', 'TaskItemController');
@@ -47,6 +46,7 @@ Route::group(['middleware'=>'auth:api'],function () {
         Route::get('file', 'FilemanagerController@index');
         Route::delete('file/{id}', 'FilemanagerController@delete');
         Route::post('file', 'FilemanagerController@uploads');
+        Route::resource('target', 'TargetController');
     });
 
 });

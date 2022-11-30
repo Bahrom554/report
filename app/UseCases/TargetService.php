@@ -5,7 +5,10 @@ namespace App\UseCases;
 
 use App\Models\ObjectM;
 use App\Models\Target;
+use App\Models\User;
+use http\Env\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TargetService
 {
@@ -34,10 +37,12 @@ class TargetService
         $object=ObjectM::findOrFail($request->object_id);
         $target0->object_type_id=$object->object_type_id ? : null;
         $target0->country_id=$object->country_id ? : null;
+        $target0->user_id=Auth::user()->id;
         $target0->save();
         return $target0;
     }
     public function edit(Target $target, $request){
+
         if($request->has('object_id')){
             $object=ObjectM::findOrFail($request->object_id);
             $request['country_id']=$object->country_id;
@@ -45,8 +50,8 @@ class TargetService
         }
         $target->update($request->only('name','target_type_id','object_id','parent_id','country_id','object_type_id'));
         return $target;
-    }
-    public function remove($id)
+     }
+     public function remove($id)
     {
         $target = $this->getTarget($id);
         $target->delete();

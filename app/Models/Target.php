@@ -31,8 +31,8 @@ class Target extends Model
     public function taskItems(){
        return $this->hasMany(TaskItem::class);
     }
-    public function result(){
-        return $this->hasone(Result::class);
+    public function results(){
+        return $this->hasMany(Result::class);
     }
     public function getParentattribute(){
         return Target::where('id',$this->parent_id)->get();

@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Target\TargetCreateRequest;
 use App\Http\Requests\Target\TargetEditRequest;
 use App\Models\Target;
+use App\Models\User;
 use App\UseCases\TargetService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -59,10 +61,16 @@ class TargetController extends Controller
 
     public function update(TargetEditRequest $request, Target $target)
     {
+        if(!(Auth::user()->role==User::ROLE_ADMIN ||Auth::user()->role==User::ROLE_MANAGER) && Auth::user()->id==$target->user_id){
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
         return  $this->service->edit($target,$request);
     }
     public function destroy(Target $target)
     {
+        if(!(Auth::user()->role==User::ROLE_ADMIN ||Auth::user()->role==User::ROLE_MANAGER) && Auth::user()->id==$target->user_id){
+        return response()->json([], Response::HTTP_UNAUTHORIZED);
+    }
         $this->service->remove($target->id);
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
