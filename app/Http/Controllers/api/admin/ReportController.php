@@ -76,7 +76,11 @@ class ReportController extends Controller
 
     public function objectReport(Request $request)
     {
-        $targets = Target::where('object_id', $request->object)->get();
+        $query = QueryBuilder::for(Target::class);
+        $query->where('object_id', $request->object);
+        $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
+        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
+        $targets=$query->paginate(2);
         foreach ($targets as $target) {
             $target->results = $target->results()->when($request->has('start', 'end'), function ($q) use ($request) {
                 $q->whereBetween('created_at', [$request->start, $request->end]);
