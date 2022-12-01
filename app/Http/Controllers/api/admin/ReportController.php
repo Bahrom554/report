@@ -41,7 +41,7 @@ class ReportController extends Controller
             });
 
         }
-        $tasks = $query->paginate(15);
+        $tasks = $query->get();
         foreach ($tasks as $task) {
             $task->items = $task->taskItems()->when($request->has('user'), function ($q) use ($request) {
                 $q->where('user_id', (int)$request->user);
