@@ -69,7 +69,7 @@ class ReportController extends Controller
         $target = Target::findOrFail($request->target);
         $results = $target->results()->when($request->has('start', 'end'), function ($q) use ($request) {
             $q->whereBetween('created_at', [$request->start, $request->end]);
-        })->get();
+        })->with('resultType','user')->get();
         return $results;
 
     }
