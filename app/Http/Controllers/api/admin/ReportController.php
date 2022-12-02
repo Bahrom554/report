@@ -27,7 +27,7 @@ class ReportController extends Controller
     {
         $query = QueryBuilder::for(Task::class);
 
-        if ( $request->filled('user')) {
+        if ($request->filled('user')) {
             $query->whereJsonContains('assigned', (int)$request->user);
         }
 
@@ -39,32 +39,26 @@ class ReportController extends Controller
                     $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
                 });
             });
-
         }
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
-        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $tasks = $query->get();
         foreach ($tasks as $task) {
             $task->task_items = $task->taskItems()->when($request->filled('user'), function ($q) use ($request) {
                 $q->where('user_id', (int)$request->user);
-            })->where(function ($q) use ($request){
-                $q->allowedAppends(!empty($request->tappend) ? explode(',', $request->get('tappend')) : []);
-                $q->allowedIncludes(!empty($request->tinclude) ? explode(',', $request->get('tinclude')) : []);
-            })
-
-                ->when($request->filled(['start', 'end']), function ($q) use ($request) {
-                    $q->where(function ($query) use ($request) {
-                        $query->whereBetween('start', [$request->start, $request->end]);
-                        $query->orwhereBetween('deadline', [$request->start, $request->end]);
-                        $query->orWhere(function ($sq) use ($request) {
-                                $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
-                            });
+            })->when($request->filled(['start', 'end']), function ($q) use ($request) {
+                $q->where(function ($query) use ($request) {
+                    $query->whereBetween('start', [$request->start, $request->end]);
+                    $query->orwhereBetween('deadline', [$request->start, $request->end]);
+                    $query->orWhere(function ($sq) use ($request) {
+                        $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
                     });
-                })->when($request->filled('filter'), function ($query) use ($request) {
-                    [$criteria, $value] = explode(':', $request->filter);
-                    return $query->where($criteria, $value);
-                })
-                ->get();
+                });
+            })->when($request->filled('filter'), function ($query) use ($request) {
+                [$criteria, $value] = explode(':', $request->filter);
+                return $query->where($criteria, $value);
+            })->when($request->filled('include'), function ($q) use ($request){
+                $q->with(explode(',', $request->get('include')));
+            })->get();
         }
         return $tasks;
     }
@@ -75,7 +69,7 @@ class ReportController extends Controller
         $target = Target::findOrFail($request->target);
         $results = $target->results()->when($request->filled(['start', 'end']), function ($q) use ($request) {
             $q->whereBetween('created_at', [$request->start, $request->end]);
-        })->with('resultType','user')->get();
+        })->with('resultType', 'user')->get();
         return $results;
 
     }
@@ -86,7 +80,7 @@ class ReportController extends Controller
         $query->where('object_id', $request->object);
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
-        $targets=$query->get();
+        $targets = $query->get();
         foreach ($targets as $target) {
             $target->results = $target->results()->when($request->filled(['start', 'end']), function ($q) use ($request) {
                 $q->whereBetween('created_at', [$request->start, $request->end]);

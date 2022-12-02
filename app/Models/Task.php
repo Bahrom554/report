@@ -12,6 +12,9 @@ class Task extends Model
         'assigned' => 'array',
         'files' => 'array',
     ];
+    protected $hidden = [
+        'object_id', 'country_id',
+    ];
 
 
 

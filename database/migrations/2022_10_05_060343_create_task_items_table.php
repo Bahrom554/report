@@ -24,7 +24,7 @@ class CreateTaskItemsTable extends Migration
             $table->date('deadline');
             $table->json('files')->nullable();
             $table->text('definition')->nullable();
-            $table->string('status')->default('waiting');
+            $table->string('status')->default('open');
             $table->foreign('object_id')->references('id')->on('objects')->onDelete('set null');
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('set null');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
