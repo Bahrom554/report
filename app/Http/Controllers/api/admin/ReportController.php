@@ -46,7 +46,7 @@ class ReportController extends Controller
             $task->taskItems = $task->taskItems()->when($request->filled('user'), function ($q) use ($request) {
                 $q->where('user_id', (int)$request->user);
             })
-                ->when($request->filled('start', 'end'), function ($q) use ($request) {
+                ->when($request->filled(['start', 'end']), function ($q) use ($request) {
                     $q->where(function ($query) use ($request) {
                         $query->whereBetween('start', [$request->start, $request->end])
                             ->orwhereBetween('deadline', [$request->start, $request->end])
@@ -67,7 +67,7 @@ class ReportController extends Controller
     public function targetReport(Request $request)
     {
         $target = Target::findOrFail($request->target);
-        $results = $target->results()->when($request->has('start', 'end'), function ($q) use ($request) {
+        $results = $target->results()->when($request->filled(['start', 'end']), function ($q) use ($request) {
             $q->whereBetween('created_at', [$request->start, $request->end]);
         })->with('resultType','user')->get();
         return $results;
@@ -82,7 +82,7 @@ class ReportController extends Controller
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $targets=$query->get();
         foreach ($targets as $target) {
-            $target->results = $target->results()->when($request->has('start', 'end'), function ($q) use ($request) {
+            $target->results = $target->results()->when($request->filled(['start', 'end']), function ($q) use ($request) {
                 $q->whereBetween('created_at', [$request->start, $request->end]);
             })->get();
         }
