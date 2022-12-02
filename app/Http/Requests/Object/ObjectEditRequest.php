@@ -25,7 +25,7 @@ class ObjectEditRequest extends FormRequest
             'code'=>'nullable|string|max:512',
             'object_type_id'=>'nullable|integer|exists:object_types,id',
             'address'=>'nullable|string',
-            'coordination'=>'array',
+            'coordination'=>'nullable|array',
             'phone'=>'nullable|array',
             'mails'=>'nullable|array',
             'description'=>'nullable|string'

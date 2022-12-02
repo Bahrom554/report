@@ -26,7 +26,7 @@ class ObjectCreateRequest extends FormRequest
             'code'=>'nullable|string|max:512',
             'object_type_id'=>'nullable|integer|exists:object_types,id',
             'address'=>'nullable|string',
-            'coordination'=>'required|array',
+            'coordination'=>'nullable|array',
             'coordination.*'=>'required|distinct',
             'phone'=>'nullable|array',
              'mails'=>'nullable|array',

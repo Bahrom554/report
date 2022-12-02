@@ -47,12 +47,16 @@ class ReportController extends Controller
         foreach ($tasks as $task) {
             $task->task_items = $task->taskItems()->when($request->filled('user'), function ($q) use ($request) {
                 $q->where('user_id', (int)$request->user);
+            })->where(function ($q) use ($request){
+                $q->allowedAppends(!empty($request->tappend) ? explode(',', $request->get('tappend')) : []);
+                $q->allowedIncludes(!empty($request->tinclude) ? explode(',', $request->get('tinclude')) : []);
             })
+
                 ->when($request->filled(['start', 'end']), function ($q) use ($request) {
                     $q->where(function ($query) use ($request) {
-                        $query->whereBetween('start', [$request->start, $request->end])
-                            ->orwhereBetween('deadline', [$request->start, $request->end])
-                            ->orWhere(function ($sq) use ($request) {
+                        $query->whereBetween('start', [$request->start, $request->end]);
+                        $query->orwhereBetween('deadline', [$request->start, $request->end]);
+                        $query->orWhere(function ($sq) use ($request) {
                                 $sq->where('start', '<', $request->start)->where('deadline', '>', $request->end);
                             });
                     });
