@@ -41,9 +41,11 @@ class ReportController extends Controller
             });
 
         }
+        $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
+        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $tasks = $query->get();
         foreach ($tasks as $task) {
-            $task->taskItems = $task->taskItems()->when($request->filled('user'), function ($q) use ($request) {
+            $task->task_items = $task->taskItems()->when($request->filled('user'), function ($q) use ($request) {
                 $q->where('user_id', (int)$request->user);
             })
                 ->when($request->filled(['start', 'end']), function ($q) use ($request) {
