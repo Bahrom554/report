@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 class Task extends Model
 {
@@ -23,6 +24,9 @@ class Task extends Model
     }
 
     public function taskItems(){
+        if(!(Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER)) {
+           return $this->hasMany(TaskItem::class)->where('user_id',Auth::user()->id);
+        }
        return $this->hasMany(TaskItem::class);
     }
 
