@@ -20,7 +20,9 @@ class ReportController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['can:adminormanager']);
+        $this->middleware(['can:adminormanager'], ['except' => [
+            ' targetReport'
+        ]]);
     }
 
     public function userReport(Request $request)
