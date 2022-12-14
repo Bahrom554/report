@@ -32,9 +32,6 @@ class ResultController extends Controller
             }
         }
         $query = QueryBuilder::for(Result::class);
-        if (!(Auth::user()->role == User::ROLE_ADMIN || Auth::user()->role == User::ROLE_MANAGER)) {
-            $query->where('creator', Auth::user()->id);
-        }
         if (!empty($request->get('search'))) {
             $query->where('name', 'like', '%' . $request->get('search') . '%');
         }
@@ -51,6 +48,9 @@ class ResultController extends Controller
     public function show(Request $request, $id)
     {
         $result = Result::findOrFail($id);
+        if(!$this->service->permissionToManager($result)){
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
         if (!empty($request->append)) {
             $result->append(explode(',', $request->append));
         }
@@ -62,12 +62,20 @@ class ResultController extends Controller
 
     public function update(ResultEditRequest $request, Result $result)
     {
+        if(!$this->service->permissionToManager($result)){
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
         $this->service->edit($result->id, $request);
         return Result::findOrFail($result->id);
     }
     public function destroy(Result $result)
     {
+        if(!$this->service->permissionToManager($result)){
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
         $this->service->remove($result->id);
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
+
+
 }

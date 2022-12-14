@@ -19,15 +19,7 @@ class UserEditRequest extends FormRequest
     {
         return [
             'name'=>'string|max:255',
-            'country_id'=>'nullable|integer|exists:countries,id',
-            'code'=>'nullable|string|max:512',
-            'object_type_id'=>'nullable|integer|exists:object_types,id',
-            'address'=>'nullable|string',
-            'coordination'=>'array',
-            'coordination.*'=>'string|distinct|min:3',
-            'phone'=>'array',
-            'mails'=>'array',
-            'description'=>'string'
+            'username'=>'string|max:255|unique:users',
         ];
     }
 }

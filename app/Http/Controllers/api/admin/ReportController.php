@@ -20,8 +20,8 @@ class ReportController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['can:adminormanager'], ['except' => [
-            ' targetReport'
+        $this->middleware(['role:admin'], ['except' => [
+            'targetReport'
         ]]);
     }
 
@@ -58,7 +58,7 @@ class ReportController extends Controller
             })->when($request->filled('filter'), function ($query) use ($request) {
                 [$criteria, $value] = explode(':', $request->filter);
                 return $query->where($criteria, $value);
-            })->when($request->filled('include'), function ($q) use ($request){
+            })->when($request->filled('include'), function ($q) use ($request) {
                 $q->with(explode(',', $request->get('include')));
             })->get();
         }

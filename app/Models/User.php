@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, HasRoles;
+
     public const ROLE_DEVELOPER = 'developer';
     public const ROLE_MANAGER = 'manager';
     public const ROLE_ADMIN = 'admin';
@@ -20,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'role','avatar', 'password','username',
+        'name','avatar', 'password','username',
     ];
 
     /**
@@ -29,8 +31,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token','role'
     ];
+
+
+
+
 
     /**
      * The attributes that should be cast to native types.
@@ -61,25 +67,6 @@ class User extends Authenticatable
        return $this->hasMany(Task::class,'creator','id');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//roles
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;

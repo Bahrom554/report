@@ -9,10 +9,10 @@ use App\Models\User;
 use App\UseCases\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use Spatie\QueryBuilder\QueryBuilder;
-
-
 class UserController extends Controller
 {
     private $service;
@@ -28,7 +28,8 @@ class UserController extends Controller
                   ->orWhere('username', 'like', '%'.request()->get('search').'%')
                   ->orWhere('role', 'like', '%'.request()->get('search').'%');
         }
-
+        $query->where('id','<>',Auth::id());
+        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedSorts(request()->sort);
         return $query->paginate(10);
 
@@ -89,7 +90,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-      $this->service->remove($user->id);
+        if(!$user->hasRole(User::ROLE_ADMIN)){
+            $this->service->remove($user->id);
+        }
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
@@ -105,8 +108,29 @@ class UserController extends Controller
           return response()->json([], Response::HTTP_RESET_CONTENT);
     }
 
-    public function roles(): array
+    public function assignRole(Request $request, User $user)
     {
-        return User::rolesList();
+        if ($user->hasAnyRole($request->role)) {
+           return response()->json([], Response::HTTP_NOT_MODIFIED);
+        }
+        $user->syncRoles($request->role);
+        if($user->hasRole(User::ROLE_ADMIN)){
+            $user->syncRoles(User::ROLE_ADMIN);
+        }
+        return $user;
     }
+
+    public function removeRole(User $user, Role $role)
+    {
+        if ($user->hasRole($role) ) {
+            $user->removeRole($role);
+             return response()->json([], Response::HTTP_NO_CONTENT);
+        }
+
+        return response()->json([], Response::HTTP_NOT_MODIFIED);
+    }
+
+
+
+
 }

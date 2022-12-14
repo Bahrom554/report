@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -11,7 +13,7 @@ class ApiController extends Controller
     public $modelClass;
     public function __construct()
     {
-        $this->middleware(['can:adminormanager'], ['except' => [
+        $this->middleware(['role:admin|manager'], ['except' => [
             'index',
             'show',
         ]]);
@@ -23,6 +25,8 @@ class ApiController extends Controller
      */
     public function index(Request $request)
     {
+
+
         $filters = $request->get('filter');
         $filter = [];
         if (!empty($filters)) {
@@ -36,9 +40,9 @@ class ApiController extends Controller
                 $query->where($searchItem, 'like', '%'.$request->get('search').'%');
             }
         }
-
-        $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
-        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
+        if(Gate::any(['admin','manager'])){
+            $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
+        }
         $query->allowedFilters($filter);
         $query->allowedSorts($request->sort);
         return $query->paginate($request->per_page);
@@ -52,10 +56,7 @@ class ApiController extends Controller
     public function show(Request $request, $id)
     {
         $model = $this->modelClass::findOrFail($id);
-        if (!empty($request->append)) {
-            $model->append(explode(',', $request->append));
-        }
-        if (!empty($request->include)) {
+        if (!empty($request->include) && Gate::any(['admin','manager']) ) {
             $model->load(explode(',', $request->include));
         }
         return $model;
@@ -74,14 +75,6 @@ class ApiController extends Controller
         $request->validate($this->modelClass::createRules());
 //        $model = $this->modelClass::firstOrCreate($request->all());
         $model = $this->modelClass::create($request->all());
-
-        if (!empty($request->append)) {
-            $model->append(explode(',', $request->append));
-        }
-        if (!empty($request->include)) {
-            $model->load(explode(',', $request->include));
-        }
-
         return $model;
     }
 
@@ -97,12 +90,6 @@ class ApiController extends Controller
         $model = $this->modelClass::findOrFail($id);
         $model->update($request->all());
 
-        if (!empty($request->append)) {
-            $model->append(explode(',', $request->append));
-        }
-        if (!empty($request->include)) {
-            $model->load(explode(',', $request->include));
-        }
 
         return $model;
     }

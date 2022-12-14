@@ -9,6 +9,7 @@ use App\Models\Task;
 use App\Models\TaskItem;
 use App\Models\User;
 use App\UseCases\TaskItemService;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +24,7 @@ class TaskItemController extends Controller
     {
         $this->service = $service;
 
-        $this->middleware(['can:adminormanager'], ['except' => [
+        $this->middleware(['role:admin|manager'], ['except' => [
             'show',
             'index'
         ]]);
@@ -43,10 +44,6 @@ class TaskItemController extends Controller
         if (!empty($request->get('search'))) {
             $query->where('name', 'like', '%' . $request->get('search') . '%');
         }
-        if((!Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER) ){
-            $query->where('user_id',Auth::user()->id);
-        }
-
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedFilters($filter);
@@ -62,16 +59,17 @@ class TaskItemController extends Controller
     public function show(Request $request, $id)
     {
         $taskItem = TaskItem::findOrFail($id);
+
         if (!empty($request->append)) {
             $taskItem->append(explode(',', $request->append));
         }
         if (!empty($request->include)) {
             $taskItem->load(explode(',', $request->include));
         }
-          if(Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER ||Auth::user()->id==$taskItem->user_id){
-              return $taskItem;
-          }
-
+        if(!$this->service->permissionToManager($taskItem)){
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
+        return $taskItem;
     }
 
     /**
@@ -93,13 +91,27 @@ class TaskItemController extends Controller
      */
     public function update(TaskItemEditRequest $request, TaskItem $taskItem)
     {
+        if(!$this->service->permissionToManager($taskItem)){
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
+
         $this->service->edit($taskItem, $request);
         return TaskItem::findOrFail($taskItem->id);
+
+
     }
 
     public function destroy(TaskItem $taskItem)
     {
+        if(!$this->service->permissionToManager($taskItem)){
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
         $this->service->remove($taskItem->id);
         return response()->json([], Response::HTTP_NO_CONTENT);
+
+
+
     }
+
+
 }

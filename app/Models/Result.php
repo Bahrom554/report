@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class Result extends Model
 {
@@ -10,7 +13,9 @@ class Result extends Model
 
 //    protected $with=['resultType'];
     protected $appends=['files0'];
-
+    protected $casts = [
+        'files' => 'array'
+    ];
 
     public function taskItem(){
       return $this->belongsTo(TaskItem::class);
@@ -31,9 +36,14 @@ class Result extends Model
     return Files::whereIn('id',$this->files)->get();
    }
 
-protected $casts = [
-    'files' => 'array'
-];
 
+    protected static function booted()
+    {
+        static::addGlobalScope('ability_result', function (Builder $builder) {
+            if(!Gate::any(['admin','manager'])){
+                $builder->whereJsonContains('creator',(int)Auth::user()->id);
+            }
+        });
+    }
 
 }

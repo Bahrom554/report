@@ -3,15 +3,21 @@
 namespace App\UseCases;
 use App\Http\Requests\Task\TaskCreateRequest;
 use App\Models\Task;
+use App\Models\User;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TaskService
 {
+
     public function create(TaskCreateRequest $request)
-    {
-        $task = Task::make($request->only('start', 'deadline','name','assigned','files'));
-        $task->creator=Auth::user()->id;
+    {    $user=Auth::user();
+        $task = Task::make($request->only('start', 'deadline','name','assigned','files','assigned_role'));
+        $task->creator=$user->id;
+        if($user->hasRole(User::ROLE_MANAGER)){
+            $task->assigned_role=$user->roles()->where('name','<>',User::ROLE_MANAGER)->firstOrFail()->id;
+        }
         $task->save();
         return $task;
     }

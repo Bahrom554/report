@@ -12,6 +12,7 @@ use App\Models\TaskItem;
 use App\Models\User;
 use App\UseCases\TaskItemService;
 use App\UseCases\TaskService;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -22,16 +23,16 @@ class TaskController extends Controller
 {
     private $service;
 
+
     public function __construct(TaskService $service)
     {
         $this->service = $service;
-        $this->middleware(['can:adminormanager'], ['except' => [
+        $this->middleware(['role:admin|manager'], ['except' => [
             'index',
             'show',
         ]]);
     }
     public function index(Request $request)
-
     {
         $filters = $request->get('filter');
         $filter = [];
@@ -44,9 +45,6 @@ class TaskController extends Controller
         if (!empty($request->get('search'))) {
             $query->where('name', 'like', '%' . $request->get('search') . '%');
         }
-         if(!(Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER)){
-             $query->whereJsonContains('assigned',(int)Auth::user()->id);
-         }
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedFilters($filter);
@@ -62,10 +60,7 @@ class TaskController extends Controller
     public function show(Request $request, $id)
     {
         $query = QueryBuilder::for(Task::class);
-        if(!(Auth::user()->role==User::ROLE_ADMIN || Auth::user()->role==User::ROLE_MANAGER)) {
-           $query->whereJsonContains('assigned', (int)Auth::user()->id)->get();
-        }
-         $task=$query->findOrFail($id);
+        $task=$query->findOrFail($id);
         if (!empty($request->append)) {
             $task->append(explode(',', $request->append));
         }
@@ -83,7 +78,6 @@ class TaskController extends Controller
 
     public function store(TaskCreateRequest $request)
     {
-
         $task = $this->service->create($request);
         return $task;
     }

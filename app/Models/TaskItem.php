@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskItem extends Model
 {
@@ -37,5 +40,15 @@ class TaskItem extends Model
     public function getFiles0Attribute(){
       return Files::whereIn('id',$this->files)->get();
   }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('ability_taskItem', function (Builder $builder) {
+            if(!Gate::any(['admin','manager'])){
+                $builder->where('user_id',Auth::user()->id);
+            }
+
+        });
+    }
 
 }

@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,11 +16,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 ;
-Route::group(['middleware'=>'auth:api'],function () {
-    // admin route
-    Route::group(['middleware'=>'can:admin','namespace'=>'api\admin'],function (){
+
+Route::group(['middleware'=>['auth:api','role:'.User::ROLE_ADMIN.'|'.User::ROLE_MANAGER.'|'.User::ROLE_DEVELOPER.'|'.User::ROLE_SOCENG.'|'.User::ROLE_PENTESTER]],function () {
+    Route::group(['middleware'=>'role:admin','namespace'=>'api\admin'],function (){
         Route::resource('users','UserController');
-        Route::get('roles','UserController@roles');
+        Route::get('roles','RoleController@index');
+        Route::get('roles/{role}', 'RoleController@show');
+        Route::post('users/{user}/roles',  'UserController@assignRole');
+        Route::delete('/users/{user}/roles/{role}', 'UserController@removeRole');
         Route::put('users/{user}/change-password','UserController@changePassword');
     });
 

@@ -8,7 +8,7 @@ class UserService
 {
     public function create($request)
     {
-        $user = User::make($request->only('name', 'username','role'));
+        $user = User::make($request->only('name', 'username'));
          if($request->has('password')){
              $user->password = bcrypt($request->password);
          }
@@ -16,21 +16,8 @@ class UserService
         return $user;
     }
 
+
     public function edit($id, $request){
-        $user = $this->getUser($id);
-        if($user->role!=User::ROLE_ADMIN){
-            $user->update($request->only([
-                'name',
-                'username',
-                'role',
-
-            ]));
-        }
-
-        return $user;
-
-    }
-    public function userEdit($id, $request){
         $user = $this->getUser($id);
         $user->update($request->only([
             'name',

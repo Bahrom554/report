@@ -15,7 +15,6 @@ class UserCreateRequest extends FormRequest
             'name'=>'required|string|max:255',
             'username'=>'required|string|max:255|unique:users',
             'password'=>'required|confirmed|string|min:6',
-            'role'=>'required|string|max:16|'.Rule::in(User::rolesList())
         ];
     }
 }

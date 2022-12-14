@@ -1,26 +1,24 @@
 <?php
 
 namespace App\Http\Controllers\api\admin;
-
-
 use App\Models\ObjectM;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\UseCases\ObjectService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use App\Http\Requests\Object\ObjectEditRequest;
 use App\Http\Requests\Object\ObjectCreateRequest;
-
-
 class ObjectController extends Controller
 {
     private $service;
     public function __construct(ObjectService $service)
     {
         $this->service=$service;
-        $this->middleware(['can:adminormanager'], ['except' => [
+        $this->middleware(['role:admin|manager'], ['except' => [
             'index',
             'show',
         ]]);
@@ -41,8 +39,10 @@ class ObjectController extends Controller
                 $query->orWhere($searchItem, 'like', '%'.$request->get('search').'%');
             }
         }
-        $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
-        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
+        if(Gate::any(['admin','manager'])) {
+            $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
+        }
+
         $query->allowedFilters($filter);
         $query->allowedSorts($request->sort);
         return $query->paginate($request->per_page);
@@ -55,10 +55,8 @@ class ObjectController extends Controller
     public function show(Request $request, $id)
     {
         $object =ObjectM::findOrFail($id);
-        if (!empty($request->append)) {
-            $object->append(explode(',', $request->append));
-        }
-        if (!empty($request->include)) {
+
+        if (!empty($request->include) && Gate::any(['admin','manager'])) {
             $object->load(explode(',', $request->include));
         }
         return $object;

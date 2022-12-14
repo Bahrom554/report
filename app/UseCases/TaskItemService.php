@@ -5,6 +5,8 @@ namespace App\UseCases;
 
 use App\Models\Target;
 use App\Models\TaskItem;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class TaskItemService
@@ -49,6 +51,22 @@ class TaskItemService
     private function gettaskItem($id): TaskItem
     {
         return TaskItem::findOrFail($id);
+    }
+
+    public function permissionToManager(TaskItem $taskItem){
+        $status=false;
+        if(Auth::user()->hasRole('manager') ){
+            if($role=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->first()){
+                if($role->users()->find($taskItem->user_id)){
+                    $status=true;
+                }
+            }
+        }
+        else{
+            $status=true;
+        }
+        return $status;
+
     }
 
 

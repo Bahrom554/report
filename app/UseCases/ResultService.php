@@ -5,6 +5,7 @@ namespace App\UseCases;
 
 use App\Models\Result;
 use App\Models\TaskItem;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,5 +49,21 @@ class ResultService
     private function getResult($id):Result
     {
         return Result::findOrFail($id);
+    }
+
+    public function permissionToManager(Result $result){
+        $status=false;
+        if(Auth::user()->hasRole('manager') ){
+            if($role=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->first()){
+                if($role->users()->find($result->creator)){
+                    $status=true;
+                }
+            }
+        }
+        else{
+            $status=true;
+        }
+        return $status;
+
     }
 }
