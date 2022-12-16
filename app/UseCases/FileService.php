@@ -2,17 +2,17 @@
 
 namespace App\UseCases;
 
-use App\Dto\GeneratedPathFileDTO;
-use App\Dto\GeneratePathFileDTO;
-use App\Helpers\FilemanagerHelper;
-use App\Models\Files;
-use DomainException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 use Throwable;
+use DomainException;
+use App\Models\Files;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Dto\GeneratePathFileDTO;
+use App\Dto\GeneratedPathFileDTO;
+use App\Helpers\FilemanagerHelper;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 
 
 

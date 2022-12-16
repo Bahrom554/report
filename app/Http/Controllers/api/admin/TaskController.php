@@ -58,8 +58,8 @@ class TaskController extends Controller
      * @return mixed
      */
     public function show(Request $request, $id)
-    {
-        $query = QueryBuilder::for(Task::class);
+    {   
+        $query = QueryBuilder::for(Task::class);    
         $task=$query->findOrFail($id);
         if (!empty($request->append)) {
             $task->append(explode(',', $request->append));
