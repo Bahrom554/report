@@ -54,7 +54,7 @@ class UserController extends Controller
     public function store(UserCreateRequest $request)
     {
        $user=$this->service->create($request);
-        return new UserListResource($user);
+       return new UserListResource($user);
     }
 
     /**
@@ -76,10 +76,8 @@ class UserController extends Controller
      * @return UserListResource
      */
     public function update(UserEditRequest $request, User $user)
-    {
-
-      $this->service->edit($user->id,$request);
-      return new UserListResource(User::findOrFail($user->id));
+    {      $this->service->edit($user->id,$request);
+        return new UserListResource(User::findOrFail($user->id));
     }
 
     /**

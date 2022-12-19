@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\api\user;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\user\UserEditRequest;
+use App\Http\Requests\admin\UserEditRequest;
 use App\Http\Resources\UserListResource;
 use App\Models\User;
 use App\UseCases\UserService;
