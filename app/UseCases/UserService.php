@@ -13,27 +13,35 @@ class UserService
          if($request->has('password')){
              $user->password = bcrypt($request->password);
          }
-        $admin=Role::where('name',User::ROLE_ADMIN)->firstOrFail();
-        if($request->filled('role') && !($request->role==$admin->name || $request->role==$admin->id)) {
+        $user->save();
+        if($request->filled('role')) {
             $user->syncRoles($request->role);
-          }
-            $user->save();
+            if ($user->hasRole(User::ROLE_ADMIN) )
+            {
+                $user->removeRole(User::ROLE_ADMIN);
+            }
+        }
         return $user;
     }
 
 
     public function edit($id, $request){
-        $admin=Role::where('name',User::ROLE_ADMIN)->firstOrFail();
         $user = $this->getUser($id);
         $user->update($request->only([
             'name',
             'username',
         ]));
-        if($request->filled('role') && !($request->role==$admin->name || $request->role==$admin->id)){
+        if($request->filled('role')){
             if (!$user->hasAnyRole($request->role) && !$user->hasRole(User::ROLE_ADMIN)) {
-                $user->syncRoles($request->role);
+                    $user->syncRoles($request->role);
+                if ($user->hasRole(User::ROLE_ADMIN) )
+                {
+                    $user->removeRole(User::ROLE_ADMIN);
+                }
+                }
             }
-        }
+
+
         return $user;
 
     }
