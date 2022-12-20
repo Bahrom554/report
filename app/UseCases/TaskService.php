@@ -15,25 +15,23 @@ class TaskService
     {    $user=Auth::user();
         $task = Task::make($request->only('start', 'deadline','name','assigned','files','assigned_role'));
         $task->creator=$user->id;
-        if($user->hasRole(User::ROLE_MANAGER)){
-            $task->assigned_role=$user->roles()->where('name','<>',User::ROLE_MANAGER)->firstOrFail()->id;
-        }
         $task->save();
         return $task;
     }
-
     public function edit($id, $request){
         $task = $this->getTask($id);
-        $task->update($request->only('start', 'deadline','name','assigned','files'));
+        if(Auth::id()==$task->creator || Auth::user()->hasRole(User::ROLE_ADMIN)){
+            $task->update($request->only('start', 'deadline','name','assigned','assigned_role','files'));
+        }
         return $task;
-
     }
     public function remove($id)
     {
         $task = $this->getTask($id);
-        $task->delete();
+        if(Auth::id()==$task->creator || Auth::user()->hasRole(User::ROLE_ADMIN)) {
+            $task->delete();
+        }
     }
-
 
     private function getTask($id):Task
     {

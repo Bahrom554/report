@@ -44,10 +44,11 @@ class Task extends Model
     {
         static::addGlobalScope('ability_task', function (Builder $builder) {
             if(!Gate::any(['admin','manager'])){
-                $builder->whereJsonContains('assigned',(int)Auth::user()->id);
+                $builder->whereJsonContains('assigned',(int)Auth::id());
             }
             elseif(Gate::allows('manager')){
-                $builder->whereJsonContains('assigned_role',(int)Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->firstOrFail()->id);
+                $roles=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->pluck('id')->toArray();
+                $builder->whereJsonContains('assigned_role',$roles);
             }
 
         });

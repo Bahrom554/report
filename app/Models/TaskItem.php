@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class TaskItem extends Model
@@ -46,6 +47,11 @@ class TaskItem extends Model
         static::addGlobalScope('ability_taskItem', function (Builder $builder) {
             if(!Gate::any(['admin','manager'])){
                 $builder->where('user_id',Auth::user()->id);
+            }
+            elseif(Gate::allows('manager')){
+                $roles=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->pluck('id')->toArray();
+                $users=DB::table('users')->rightJoin('model_has_roles','users.id','=','model_has_roles.model_id')->whereIn('model_has_roles.role_id',$roles)->pluck('id')->toArray();
+                $builder->whereIn('user_id',$users);
             }
 
         });

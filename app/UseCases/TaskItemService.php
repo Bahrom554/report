@@ -53,21 +53,21 @@ class TaskItemService
         return TaskItem::findOrFail($id);
     }
 
-    public function permissionToManager(TaskItem $taskItem){
-        $status=false;
-        if(Auth::user()->hasRole('manager') ){
-            if($role=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->first()){
-                if($role->users()->find($taskItem->user_id)){
-                    $status=true;
-                }
-            }
-        }
-        else{
-            $status=true;
-        }
-        return $status;
-
-    }
+//    public function permissionToManager(TaskItem $taskItem){
+//        $status=false;
+//        if(Auth::user()->hasRole('manager') ){
+//            if($role=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->first()){
+//                if($role->users()->find($taskItem->user_id)){
+//                    $status=true;
+//                }
+//            }
+//        }
+//        else{
+//            $status=true;
+//        }
+//        return $status;
+//
+//    }
 
 
 }

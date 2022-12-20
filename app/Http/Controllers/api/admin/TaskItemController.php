@@ -66,9 +66,9 @@ class TaskItemController extends Controller
         if (!empty($request->include)) {
             $taskItem->load(explode(',', $request->include));
         }
-        if(!$this->service->permissionToManager($taskItem)){
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
-        }
+//        if(!$this->service->permissionToManager($taskItem)){
+//            return response()->json([], Response::HTTP_UNAUTHORIZED);
+//        }
         return $taskItem;
     }
 
@@ -80,7 +80,6 @@ class TaskItemController extends Controller
 
     public function store(TaskItemCreateRequest $request)
     {
-
         return $this->service->create($request);
     }
 
@@ -91,9 +90,9 @@ class TaskItemController extends Controller
      */
     public function update(TaskItemEditRequest $request, TaskItem $taskItem)
     {
-        if(!$this->service->permissionToManager($taskItem)){
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
-        }
+//        if(!$this->service->permissionToManager($taskItem)){
+//            return response()->json([], Response::HTTP_UNAUTHORIZED);
+//        }
 
         $this->service->edit($taskItem, $request);
         return TaskItem::findOrFail($taskItem->id);
@@ -103,9 +102,9 @@ class TaskItemController extends Controller
 
     public function destroy(TaskItem $taskItem)
     {
-        if(!$this->service->permissionToManager($taskItem)){
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
-        }
+//        if(!$this->service->permissionToManager($taskItem)){
+//            return response()->json([], Response::HTTP_UNAUTHORIZED);
+//        }
         $this->service->remove($taskItem->id);
         return response()->json([], Response::HTTP_NO_CONTENT);
 

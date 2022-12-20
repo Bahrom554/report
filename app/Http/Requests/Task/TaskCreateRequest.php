@@ -25,6 +25,7 @@ class TaskCreateRequest extends FormRequest
             'deadline'=>'required|date',
             'name'=>'required|string',
             'assigned'=>'required|array',
+            'assigned_role'=>'required|array',
             'assigned.*'=>'required|integer|distinct',
             'files'=>'nullable|array',
 

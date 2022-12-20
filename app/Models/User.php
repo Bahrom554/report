@@ -70,15 +70,5 @@ class User extends Authenticatable
        return $this->hasMany(Task::class,'creator','id');
     }
 
-    public function scopeManager($query)
-    {
-         if(Auth::user()->hasRole(self::ROLE_MANAGER)){
-             $roles=Auth::user()->roles()->pluck('id')->toArray();
-             return $query->where(function ($q) use($roles){
-                 if(!$q->hasRole($roles)){ return false; }
-                 });
-              }
-         return $query;
 
-    }
 }
