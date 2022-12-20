@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class User extends Authenticatable
 {
@@ -67,24 +70,15 @@ class User extends Authenticatable
        return $this->hasMany(Task::class,'creator','id');
     }
 
-    public function isAdmin(): bool
+    public function scopeManager($query)
     {
-        return $this->role === self::ROLE_ADMIN;
-    }
-    public function isDeveloper(): bool
-    {
-        return $this->role === self::ROLE_DEVELOPER;
-    }
-    public function isManager(): bool
-    {
-        return $this->role === self::ROLE_MANAGER;
-    }
-    public function isPentester(): bool
-    {
-        return $this->role === self::ROLE_PENTESTER;
-    }
-    public function isSoceng(): bool
-    {
-        return $this->role === self::ROLE_SOCENG;
+         if(Auth::user()->hasRole(self::ROLE_MANAGER)){
+             $roles=Auth::user()->roles()->pluck('id')->toArray();
+             return $query->where(function ($q) use($roles){
+                 if(!$q->hasRole($roles)){ return false; }
+                 });
+              }
+         return $query;
+
     }
 }

@@ -16,41 +16,23 @@ use Spatie\QueryBuilder\QueryBuilder;
 class UserController extends Controller
 {
     private $service;
+
     public function __construct(UserService $service)
     {
        $this->service=$service;
+//        $this->middleware(['role:admin'], ['except' => [
+//            'index',
+//        ]]);
+        $this->middleware(['role:admin|manager'], ['only' => [
+            'index',
+        ]]);
+
     }
     public function index(Request $request)
     {
-        $query = QueryBuilder::for(User::class);
-        if (!empty(request()->get('search'))){
-            $query->where('name', 'like', '%'.request()->get('search').'%')
-                  ->orWhere('username', 'like', '%'.request()->get('search').'%')
-                  ->orWhere('role', 'like', '%'.request()->get('search').'%');
-        }
-        $query->where('id','<>',Auth::id());
-        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
-        $query->allowedSorts(request()->sort);
-        return $query->paginate(10);
+        return $this->service->index($request);
 
     }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return UserListResource
-     */
-
-
     public function store(UserCreateRequest $request)
     {
        $user=$this->service->create($request);
@@ -109,27 +91,27 @@ class UserController extends Controller
           return response()->json([], Response::HTTP_RESET_CONTENT);
     }
 
-    public function assignRole(Request $request, User $user)
-    {
-        if ($user->hasAnyRole($request->role)) {
-           return response()->json([], Response::HTTP_NOT_MODIFIED);
-        }
-        $user->syncRoles($request->role);
-        if($user->hasRole(User::ROLE_ADMIN)){
-            $user->syncRoles(User::ROLE_ADMIN);
-        }
-        return $user;
-    }
-
-    public function removeRole(User $user, Role $role)
-    {
-        if ($user->hasRole($role) ) {
-            $user->removeRole($role);
-             return response()->json([], Response::HTTP_NO_CONTENT);
-        }
-
-        return response()->json([], Response::HTTP_NOT_MODIFIED);
-    }
+//    public function assignRole(Request $request, User $user)
+//    {
+//        if ($user->hasAnyRole($request->role)) {
+//           return response()->json([], Response::HTTP_NOT_MODIFIED);
+//        }
+//        $user->syncRoles($request->role);
+//        if($user->hasRole(User::ROLE_ADMIN)){
+//            $user->syncRoles(User::ROLE_ADMIN);
+//        }
+//        return $user;
+//    }
+//
+//    public function removeRole(User $user, Role $role)
+//    {
+//        if ($user->hasRole($role) ) {
+//            $user->removeRole($role);
+//             return response()->json([], Response::HTTP_NO_CONTENT);
+//        }
+//
+//        return response()->json([], Response::HTTP_NOT_MODIFIED);
+//    }
 
 
 
