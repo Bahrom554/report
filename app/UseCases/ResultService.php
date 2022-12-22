@@ -13,7 +13,7 @@ class ResultService
 {
     public function create($request)
     {
-        $result = Result::make($request->only( 'task_item_id','target_id','result_type_id','description','files'));
+        $result = Result::make($request->only( 'task_item_id','target_id','result_type_id','description','files','degree'));
         if($request->has('task_item_id')){
             $taskItem=TaskItem::findOrFail($request->task_item_id);
             $taskItem->status=$request->status ? : "waiting";
@@ -27,7 +27,7 @@ class ResultService
 
     public function edit($id, $request){
         $result = $this->getResult($id);
-        $result->update($request->only('task_item_id','target_id','result_type_id','description','files'));
+        $result->update($request->only('task_item_id','target_id','result_type_id','description','files','degree'));
         $result = $this->getResult($id);
         if ($result->taskItem !== null){
             $result->taskItem->update($request->only('status'));

@@ -25,7 +25,8 @@ class ResultCreateRequest extends FormRequest
             'target_id'=>'nullable|integer|exists:targets,id',
             'result_type_id'=>'required|integer|exists:result_types,id',
             'description'=>'required|string',
-            'files'=>'nullable|array'
+            'files'=>'nullable|array',
+            'degree'=>'required|string'
         ];
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Gate;
 
 class Task extends Model
 {
-    protected $fillable = ['start', 'deadline', 'name', 'creator', 'assigned', 'assigned_role', 'files'];
+    protected $fillable = ['start', 'deadline', 'name','definition', 'creator', 'assigned', 'assigned_role', 'files'];
     protected $casts = [
         'assigned' => 'array',
         'assigned_role'=>'array',
@@ -27,7 +27,7 @@ class Task extends Model
 
     public function taskItems()
     {
-        return $this->hasMany(TaskItem::class);
+        return $this->hasMany(TaskItem::class)->orderBy('created_at','DESC');
     }
 
     public function getMembersAttribute()

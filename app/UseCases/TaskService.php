@@ -13,7 +13,7 @@ class TaskService
 
     public function create(TaskCreateRequest $request)
     {    $user=Auth::user();
-        $task = Task::make($request->only('start', 'deadline','name','assigned','files','assigned_role'));
+        $task = Task::make($request->only('start', 'deadline','name','definition','assigned','files','assigned_role'));
         $task->creator=$user->id;
         $task->save();
         return $task;
@@ -21,7 +21,7 @@ class TaskService
     public function edit($id, $request){
         $task = $this->getTask($id);
         if(Auth::id()==$task->creator || Auth::user()->hasRole(User::ROLE_ADMIN)){
-            $task->update($request->only('start', 'deadline','name','assigned','assigned_role','files'));
+            $task->update($request->only('start', 'deadline','name','definition','assigned','assigned_role','files'));
         }
         return $task;
     }

@@ -31,6 +31,7 @@ class TaskEditRequest extends FormRequest
             'assigned_role.*'=>'integer|distinct',
             'files'=>'array',
             'files.*'=>'integer|distinct',
+            'definition'=>'nullable|string'
         ];
     }
 }

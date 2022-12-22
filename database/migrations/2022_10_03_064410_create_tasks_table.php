@@ -18,6 +18,7 @@ class CreateTasksTable extends Migration
             $table->string('name');
             $table->date('start');
             $table->date('deadline');
+            $table->string('definition')->nullable();
             $table->unsignedBigInteger('creator');
             $table->json('assigned');
             $table->json('assigned_role')->nullable();

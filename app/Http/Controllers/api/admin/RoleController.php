@@ -14,12 +14,21 @@ class RoleController extends Controller
 
 {   public function __construct()
 {
-    $this->middleware(['role:admin'],['only'=>'index']);
-    $this->middleware(['role:admin|manager'],['only'=>'show']);
+    $this->middleware(['role:admin|manager']);
+
 }
    public function index()
  {
-    return Role::whereNotIn('name', ['admin'])->paginate(5);
+     $query=QueryBuilder::for(Role::class);
+     $query->whereNotIn('name', ['admin']);
+     if(Auth::user()->hasRole(User::ROLE_MANAGER)){
+         $roles=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->pluck('id')->toArray();
+         $query->whereIn('id',$roles);
+     }
+
+     $query->with(!empty($request->include) ? explode(',', $request->get('include')) : []);
+     return $query->get();
+
  }
 
  public function show(Request $request, $id){
@@ -28,7 +37,7 @@ class RoleController extends Controller
      $query->where('id',$id)->whereNotIn('name', ['admin']);
      if(Auth::user()->hasRole(User::ROLE_MANAGER)){
          $roles=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->pluck('id')->toArray();
-         $query->where('id',$roles);
+         $query->whereIn('id',$roles);
      }
      $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
        return $query->get();

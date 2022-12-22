@@ -24,7 +24,6 @@ class UserService
             $users=DB::table('users')->rightJoin('model_has_roles','users.id','=','model_has_roles.model_id')->whereIn('model_has_roles.role_id',$roles)->pluck('id')->toArray();
             $query->whereIn('id',$users);
         }
-        $query->where('id','<>',Auth::id());
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedSorts(request()->sort);
         return $query->paginate(10);

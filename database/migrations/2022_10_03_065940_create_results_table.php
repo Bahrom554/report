@@ -20,6 +20,7 @@ class CreateResultsTable extends Migration
             $table->unsignedBigInteger('creator');
             $table->unsignedBigInteger('target_id')->nullable();
             $table->text('description');
+            $table->string('degree');
             $table->json('files');
             $table->timestamps();
         });
