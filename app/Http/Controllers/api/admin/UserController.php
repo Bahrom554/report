@@ -20,9 +20,9 @@ class UserController extends Controller
     public function __construct(UserService $service)
     {
        $this->service=$service;
-//        $this->middleware(['role:admin'], ['except' => [
-//            'index',
-//        ]]);
+        $this->middleware(['role:admin'], ['except' => [
+            'index',
+        ]]);
         $this->middleware(['role:admin|manager'], ['only' => [
             'index',
         ]]);

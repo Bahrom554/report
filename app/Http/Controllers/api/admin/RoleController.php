@@ -25,8 +25,6 @@ class RoleController extends Controller
          $roles=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->pluck('id')->toArray();
          $query->whereIn('id',$roles);
      }
-
-     $query->with(!empty($request->include) ? explode(',', $request->get('include')) : []);
      return $query->get();
 
  }
