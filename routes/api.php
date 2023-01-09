@@ -22,6 +22,7 @@ Route::group(['middleware'=>['auth:api','role:'.User::ROLE_ADMIN.'|'.User::ROLE_
         Route::resource('target-type', 'TargetTypeController');
         Route::resource('object', 'ObjectController');
         Route::resource('task', 'TaskController');
+        Route::get('tasks/{task}/user','TaskController@users');
         Route::resource('task-item', 'TaskItemController');
         Route::get('userReport','ReportController@userReport');
         Route::get('targetReport','ReportController@targetReport');

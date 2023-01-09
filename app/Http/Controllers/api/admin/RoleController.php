@@ -25,7 +25,7 @@ class RoleController extends Controller
          $roles=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->pluck('id')->toArray();
          $query->whereIn('id',$roles);
      }
-     return $query->get();
+     return $query->paginate(15);
 
  }
 
@@ -38,6 +38,6 @@ class RoleController extends Controller
          $query->whereIn('id',$roles);
      }
      $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
-       return $query->get();
+       return $query->firstOrFail();
  }
 }

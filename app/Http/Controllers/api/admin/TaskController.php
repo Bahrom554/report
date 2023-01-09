@@ -58,8 +58,8 @@ class TaskController extends Controller
      * @return mixed
      */
     public function show(Request $request, $id)
-    {   
-        $query = QueryBuilder::for(Task::class);    
+    {
+        $query = QueryBuilder::for(Task::class);
         $task=$query->findOrFail($id);
         if (!empty($request->append)) {
             $task->append(explode(',', $request->append));
@@ -96,5 +96,10 @@ class TaskController extends Controller
     {
         $this->service->remove($task->id);
         return response()->json([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function users(Task $task){
+//        $task=Task::firstOrfail($id);
+        return User::whereIn('id',$task->assigned)->get();
     }
 }
