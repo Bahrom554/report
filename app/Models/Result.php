@@ -41,7 +41,7 @@ class Result extends Model
     {
         static::addGlobalScope('ability_result', function (Builder $builder) {
             if(!Gate::any(['admin','manager'])){
-                $builder->whereJsonContains('creator',(int)Auth::user()->id);
+                $builder->where('creator',(int)Auth::user()->id);
             }
         });
     }
