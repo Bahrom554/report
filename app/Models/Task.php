@@ -39,6 +39,7 @@ class Task extends Model
     {
         return Files::whereIn('id', $this->files)->get();
     }
+   
 
     protected static function booted()
     {
@@ -48,7 +49,12 @@ class Task extends Model
             }
             elseif(Gate::allows('manager')){
                 $roles=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->pluck('id')->toArray();
-                $builder->whereJsonContains('assigned_role',$roles);
+                $builder->where(function($query){
+                    foreach($roles as $role){
+                        $query->orwhereJsonContains('assigned_role',$role);
+                    }
+                });
+               
             }
 
         });
