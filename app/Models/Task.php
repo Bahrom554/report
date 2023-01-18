@@ -49,7 +49,7 @@ class Task extends Model
             }
             elseif(Gate::allows('manager')){
                 $roles=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->pluck('id')->toArray();
-                $builder->where(function($query){
+                $builder->where(function($query) use ($roles){
                     foreach($roles as $role){
                         $query->orwhereJsonContains('assigned_role',$role);
                     }
