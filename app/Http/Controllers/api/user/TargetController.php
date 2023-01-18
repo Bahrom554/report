@@ -62,14 +62,14 @@ class TargetController extends Controller
     public function update(TargetEditRequest $request, Target $target)
     {
         if(!(Auth::user()->hasAnyRole('admin','manager')) && Auth::user()->id!=$target->user_id){
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
+            return response()->json([], Response::HTTP_FORBIDDEN);
         }
         return  $this->service->edit($target,$request);
     }
     public function destroy(Target $target)
     {
         if(!(Auth::user()->hasAnyRole('admin','manager')) && Auth::user()->id!=$target->user_id){
-        return response()->json([], Response::HTTP_UNAUTHORIZED);
+        return response()->json([], Response::HTTP_FORBIDDEN);
     }
         $this->service->remove($target->id);
         return response()->json([], Response::HTTP_NO_CONTENT);
