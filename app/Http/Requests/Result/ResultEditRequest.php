@@ -26,7 +26,7 @@ class ResultEditRequest extends FormRequest
             'result_type_id'=>'integer|exists:result_types,id',
             'description'=>'string',
             'files'=>'nullable|array',
-            'degree'=>'string'
+            'degree'=>'nullable|string'
         ];
     }
 }
