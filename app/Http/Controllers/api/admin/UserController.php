@@ -61,6 +61,13 @@ class UserController extends Controller
     public function update(UserEditRequest $request, User $user)
     {
         $this->service->edit($user->id,$request);
+        if($request->has('password')){
+            $this->service->resetPassword($request,$user->id);
+            DB::table('oauth_access_tokens')
+                ->where('user_id', $user->id)->update([
+                    'revoked' => true
+                ]);
+        }
 
         return new UserListResource(User::findOrFail($user->id));
     }
