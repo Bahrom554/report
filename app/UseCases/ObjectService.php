@@ -10,13 +10,13 @@ class ObjectService
 {
     public function create($request)
     {
-        $object = ObjectM::make($request->only('country_id', 'code', 'object_type_id', 'name', 'address', 'coordination', 'phone', 'mails', 'description'));
+        $object = ObjectM::make($request->only('country_id', 'code', 'object_type_id', 'name', 'address', 'coordination', 'phone', 'mails', 'description','assigned_role'));
         $object->save();
         return $object;
     }
     public function edit($id, $request){
         $object = $this->getObject($id);
-        $object->update($request->only('country_id', 'code', 'object_type_id', 'name', 'address', 'coordination', 'phone', 'mails', 'description'));
+        $object->update($request->only('country_id', 'code', 'object_type_id', 'name', 'address', 'coordination', 'phone', 'mails', 'description','assigned_role'));
         return $object;
     }
     public function remove($id)
