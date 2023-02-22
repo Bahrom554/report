@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Gate;
 
 class Task extends Model
 {
-    protected $fillable = ['start', 'deadline', 'name','definition', 'creator', 'assigned', 'assigned_role', 'files'];
+    protected $fillable = ['start', 'deadline', 'name','status','definition', 'creator', 'assigned', 'assigned_role', 'files'];
     protected $casts = [
         'assigned' => 'array',
         'assigned_role'=>'array',

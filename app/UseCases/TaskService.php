@@ -21,7 +21,7 @@ class TaskService
     public function edit($id, $request){
         $task = $this->getTask($id);
         if(Auth::id()==$task->creator || Auth::user()->hasRole(User::ROLE_ADMIN)){
-            $task->update($request->only('start', 'deadline','name','definition','assigned','assigned_role','files'));
+            $task->update($request->only('start', 'deadline','name','definition','assigned','assigned_role','files','status'));
         }
         return $task;
     }
