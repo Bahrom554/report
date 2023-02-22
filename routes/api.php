@@ -6,14 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/updater',function(){
-$results=Result::withoutGlobalScope('ability_result');
-foreach($results as $result){
-    $result->creator=$result->taskItem->user_id;
-    $result->save();
-}
-return "success";
-});
+
 Route::group(['middleware'=>['auth:api','role:'.User::ROLE_ADMIN.'|'.User::ROLE_MANAGER.'|'.User::ROLE_DEVELOPER.'|'.User::ROLE_SOCENG.'|'.User::ROLE_PENTESTER]],function () {
     Route::group(['namespace'=>'api\admin'],function (){
         Route::resource('users','UserController');
