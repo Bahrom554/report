@@ -47,7 +47,7 @@ class ResultService
                 $taskItem->status = $request->status ?: "waiting";
                 $result = Result::make($request->only('task_item_id', 'target_id', 'result_type_id', 'description', 'files', 'degree'));
                 $result->target_id = $taskItem->target_id;
-                $result->creator = $taskItem->user_id;
+                $result->creator = Auth::user()->id;
                 $taskItem->save();
                 $result->save();
             }
