@@ -19,7 +19,7 @@ class UserEditRequest extends FormRequest
     {
         return [
             'name'=>'string|max:255',
-            'username'=>'string|max:255|unique:users,username,'.$this->user->id,
+            'username'=>'string|max:255|unique:users,username,'.($this->user->id ?? auth()->id()),
 
         ];
     }

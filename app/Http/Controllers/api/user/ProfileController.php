@@ -30,7 +30,7 @@ class ProfileController extends Controller
 
     public function update(UserEditRequest $request)
     {
-        $this->service->edit(auth()->id(), $request);
+         $this->service->edit(auth()->id(), $request);
         return new UserListResource(User::findOrFail(auth()->id()));
     }
 
