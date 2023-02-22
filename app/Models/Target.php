@@ -32,7 +32,7 @@ class Target extends Model
        return $this->hasMany(TaskItem::class);
     }
     public function results(){
-        return $this->hasMany(Result::class);
+        return $this->hasMany(Result::class)->withoutGlobalScope('ability_result');
     }
     public function getParentattribute(){
         return Target::where('id',$this->parent_id)->get();

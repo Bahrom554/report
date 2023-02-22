@@ -37,6 +37,7 @@ class ResultService
 
     public function create($request)
     {
+        DB::beginTransaction();
         try {
             if ($request->has('task_item_id')) {
                 $taskItem = TaskItem::findOrFail($request->task_item_id);
@@ -53,26 +54,24 @@ class ResultService
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json('error', $e->getMessage());
+            return response()->json(['error'=>$e->getMessage()]);
         }
         return $result;
     }
 
     public function edit($id, $request)
     {
+        DB::beginTransaction();
         try {
             $result = $this->getResult($id);
-            if (!$this->permission($result->taskItem)) {
-                return response()->json([], Response::HTTP_UNAUTHORIZED);
-            }
-            if ($result->taskItem !== null) {
+             if ($result->taskItem !== null) {
                 $result->taskItem->update($request->only('status'));
             }
             $result->update($request->only('task_item_id', 'target_id', 'result_type_id', 'description', 'files', 'degree'));
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json('error', $e->getMessage());
+            return response()->json(['error'=>$e->getMessage()]);
         }
         return $result;
     }
@@ -80,9 +79,6 @@ class ResultService
     public function show(Request $request, $id)
     {
         $result = $this->getResult($id);
-        if (!$this->permission($result->taskItem)) {
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
-        }
         if (!empty($request->append)) {
             $result->append(explode(',', $request->append));
         }
@@ -95,9 +91,6 @@ class ResultService
     public function remove($id)
     {
         $result = $this->getResult($id);
-        if (!$this->permission($result->taskItem)) {
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
-        }
         if ($result->taskItem !== null) {
             $result->taskItem->status = "waiting";
         }

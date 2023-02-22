@@ -25,7 +25,7 @@ class CreateTasksTable extends Migration
             $table->json('files')->nullable();
             $table->unsignedBigInteger('object_id')->nullable();
             $table->unsignedBigInteger('country_id')->nullable();
-            $table->foreign('creator')->references('id')->on('users');
+            $table->foreign('creator')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
