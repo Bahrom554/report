@@ -24,22 +24,7 @@ class ResultController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->get('filter');
-        $filter = [];
-        if (!empty($filters)) {
-            foreach ($filters as $k => $item) {
-                $filter[] = AllowedFilter::exact($k);
-            }
-        }
-        $query = QueryBuilder::for(Result::class);
-        if (!empty($request->get('search'))) {
-            $query->where('name', 'like', '%' . $request->get('search') . '%');
-        }
-        $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
-        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
-        $query->allowedFilters($filter);
-        $query->allowedSorts($request->sort);
-        return $query->paginate($request->per_page);
+        return $this->service->list($request);
     }
     public function store(ResultCreateRequest $request)
     {
@@ -47,35 +32,18 @@ class ResultController extends Controller
     }
     public function show(Request $request, $id)
     {
-        $result = Result::findOrFail($id);
-        if(!$this->service->permissionToManager($result)){
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
-        }
-        if (!empty($request->append)) {
-            $result->append(explode(',', $request->append));
-        }
-        if (!empty($request->include)) {
-            $result->load(explode(',', $request->include));
-        }
-        return $result;
+        return $this->service->show($request,$id);
+        
     }
-
-    public function update(ResultEditRequest $request, Result $result)
+   public function update(ResultEditRequest $request, Result $result)
     {
-        if(!$this->service->permissionToManager($result)){
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
-        }
-        $this->service->edit($result->id, $request);
-        return Result::findOrFail($result->id);
+      return $this->service->edit($result->id, $request);
+        
     }
     public function destroy(Result $result)
     {
-        if(!$this->service->permissionToManager($result)){
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
-        }
-        $this->service->remove($result->id);
-        return response()->json([], Response::HTTP_NO_CONTENT);
-    }
+        return $this->service->remove($result->id);
+     }
 
 
 }

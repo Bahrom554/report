@@ -2,68 +2,119 @@
 
 namespace App\UseCases;
 
-
+use App\Models\User;
 use App\Models\Result;
 use App\Models\TaskItem;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class ResultService
 {
+
+    public function list(Request $request)
+    {
+        $filters = $request->get('filter');
+        $filter = [];
+        if (!empty($filters)) {
+            foreach ($filters as $k => $item) {
+                $filter[] = AllowedFilter::exact($k);
+            }
+        }
+        $query = QueryBuilder::for(Result::class);
+        if (!empty($request->get('search'))) {
+            $query->where('name', 'like', '%' . $request->get('search') . '%');
+        }
+        $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
+        $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
+        $query->allowedFilters($filter);
+        $query->allowedSorts($request->sort);
+        return $query->paginate($request->per_page);
+    }
+
     public function create($request)
     {
-        $result = Result::make($request->only( 'task_item_id','target_id','result_type_id','description','files','degree'));
-        if($request->has('task_item_id')){
-            $taskItem=TaskItem::findOrFail($request->task_item_id);
-            $taskItem->status=$request->status ? : "waiting";
-            $result->target_id=$taskItem->target_id;
-            $taskItem->save();
+        try {
+            if ($request->has('task_item_id')) {
+                $taskItem = TaskItem::findOrFail($request->task_item_id);
+                if (!$this->permission($taskItem)) {
+                    return response()->json([], Response::HTTP_UNAUTHORIZED);
+                }
+                $taskItem->status = $request->status ?: "waiting";
+                $result = Result::make($request->only('task_item_id', 'target_id', 'result_type_id', 'description', 'files', 'degree'));
+                $result->target_id = $taskItem->target_id;
+                $result->creator = $taskItem->user_id;
+                $taskItem->save();
+                $result->save();
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json('error', $e->getMessage());
         }
-        $result->creator=Auth::user()->id;
-        $result->save();
         return $result;
     }
 
-    public function edit($id, $request){
-        $result = $this->getResult($id);
-        $result->update($request->only('task_item_id','target_id','result_type_id','description','files','degree'));
-        $result = $this->getResult($id);
-        if ($result->taskItem !== null){
-            $result->taskItem->update($request->only('status'));
+    public function edit($id, $request)
+    {
+        try {
+            $result = $this->getResult($id);
+            if (!$this->permission($result->taskItem)) {
+                return response()->json([], Response::HTTP_UNAUTHORIZED);
+            }
+            if ($result->taskItem !== null) {
+                $result->taskItem->update($request->only('status'));
+            }
+            $result->update($request->only('task_item_id', 'target_id', 'result_type_id', 'description', 'files', 'degree'));
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json('error', $e->getMessage());
         }
-
         return $result;
+    }
 
+    public function show(Request $request, $id)
+    {
+        $result = $this->getResult($id);
+        if (!$this->permission($result->taskItem)) {
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
+        if (!empty($request->append)) {
+            $result->append(explode(',', $request->append));
+        }
+        if (!empty($request->include)) {
+            $result->load(explode(',', $request->include));
+        }
+        return $result;
     }
 
     public function remove($id)
     {
         $result = $this->getResult($id);
-        if ($result->taskItem !== null){
-            $result->taskItem->status="waiting";
+        if (!$this->permission($result->taskItem)) {
+            return response()->json([], Response::HTTP_UNAUTHORIZED);
+        }
+        if ($result->taskItem !== null) {
+            $result->taskItem->status = "waiting";
         }
         $result->delete();
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
-    private function getResult($id):Result
+    private function getResult($id): Result
     {
         return Result::findOrFail($id);
     }
 
-    public function permissionToManager(Result $result){
-        $status=false;
-        if(Auth::user()->hasRole('manager') ){
-            if($role=Auth::user()->roles()->where('name','<>',User::ROLE_MANAGER)->first()){
-                if($role->users()->find($result->creator)){
-                    $status=true;
-                }
-            }
+    private function permission(TaskItem $taskItem)
+    {
+        if ($taskItem->user_id == Auth::id() || Auth::user()->hasRole(User::ROLE_MANAGER)) {
+            return true;
         }
-        else{
-            $status=true;
-        }
-        return $status;
-
+        return false;
     }
 }

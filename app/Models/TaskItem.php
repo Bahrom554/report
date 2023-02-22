@@ -18,7 +18,7 @@ class TaskItem extends Model
     protected $appends=['files0'];
 
     public function result(){
-        return $this->hasone(Result::class,'task_item_id','id');
+        return $this->hasMany(Result::class,'task_item_id','id');
     }
     public function object(){
        return $this->belongsTo(ObjectM::class);
