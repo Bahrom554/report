@@ -21,18 +21,19 @@ class ReportController extends Controller
     public function __construct()
     {
         $this->middleware(['role:admin|manager'], ['except' => [
-            'targetReport'
+            'targetReport','userReport'
         ]]);
     }
 
     public function userReport(Request $request)
     {
+        
         $query = QueryBuilder::for(Task::class);
 
         if ($request->filled('users')) {
             $query->where(function($query) use ($request){
                 foreach($request->users as $user){
-                    $query->orwhereJsonContains('assigned',$request->user);
+                    $query->orwhereJsonContains('assigned',$user);
                 }});
         }
          if ($request->filled('start') && $request->filled('end')) {
