@@ -33,7 +33,7 @@ class ReportController extends Controller
         if ($request->filled('users')) {
             $users=json_decode($request->users, true);
             $query->where(function($query) use ($users){
-                   foreach($users as $user){
+                  foreach($users as $user){
                     $query->orwhereJsonContains('assigned',$user);
                 }});
         }
@@ -51,8 +51,10 @@ class ReportController extends Controller
         foreach ($tasks as $task) {
             $task->task_items = $task->taskItems()->when($request->filled('users'), function ($q) use ($request) {
                 $users=json_decode($request->users, true);
-                $q->whereIn('user_id', $users);
-            })->when($request->filled(['start', 'end']), function ($q) use ($request) {
+                if(!empty($users)){
+                    $q->whereIn('user_id', $users);
+                }
+                })->when($request->filled(['start', 'end']), function ($q) use ($request) {
                 $q->where(function ($query) use ($request) {
                     $query->whereBetween('start', [$request->start, $request->end]);
                     $query->orwhereBetween('deadline', [$request->start, $request->end]);
