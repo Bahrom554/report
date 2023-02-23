@@ -29,11 +29,13 @@ class ReportController extends Controller
     {
         $query = QueryBuilder::for(Task::class);
 
-        if ($request->filled('user')) {
-            $query->whereJsonContains('assigned', (int)$request->user);
+        if ($request->filled('users')) {
+            $query->where(function($query) use ($request){
+                foreach($request->users as $user){
+                    $query->orwhereJsonContains('assigned',$request->user);
+                }});
         }
-
-        if ($request->filled('start') && $request->filled('end')) {
+         if ($request->filled('start') && $request->filled('end')) {
             $query->where(function ($q) use ($request) {
                 $q->whereBetween('start', [$request->start, $request->end]);
                 $q->orwhereBetween('deadline', [$request->start, $request->end]);
@@ -45,8 +47,8 @@ class ReportController extends Controller
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $tasks = $query->get();
         foreach ($tasks as $task) {
-            $task->task_items = $task->taskItems()->when($request->filled('user'), function ($q) use ($request) {
-                $q->where('user_id', (int)$request->user);
+            $task->task_items = $task->taskItems()->when($request->filled('users'), function ($q) use ($request) {
+                $q->whereIn('user_id', $request->users);
             })->when($request->filled(['start', 'end']), function ($q) use ($request) {
                 $q->where(function ($query) use ($request) {
                     $query->whereBetween('start', [$request->start, $request->end]);

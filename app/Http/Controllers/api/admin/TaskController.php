@@ -45,6 +45,9 @@ class TaskController extends Controller
         if (!empty($request->get('search'))) {
             $query->where('name', 'like', '%' . $request->get('search') . '%');
         }
+        if($request->filled(['start', 'end'])){
+            $query->whereBetween('created_at',[$request->start, $request->end]);
+        } 
         $query->allowedAppends(!empty($request->append) ? explode(',', $request->get('append')) : []);
         $query->allowedIncludes(!empty($request->include) ? explode(',', $request->get('include')) : []);
         $query->allowedFilters($filter);
