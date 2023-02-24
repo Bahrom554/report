@@ -67,7 +67,7 @@ class ReportController extends Controller
                 return $query->where($criteria, $value);
             })->when($request->filled('include'), function ($q) use ($request) {
                 $q->with(explode(',', $request->get('include')));
-            })->get();
+            })->orderBy('start')->get();
         }
         return $tasks;
     }
