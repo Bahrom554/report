@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Gate;
 
 class TaskItem extends Model
 {
-    protected $fillable =[ 'object_id','user_id','task_id','country_id','start','deadline','target_id','files','definition'];
+    protected $fillable =[ 'object_id','user_id','task_id','country_id','start','deadline','target_id','files','definition','status'];
     protected $casts = [
         'files' => 'array',
     ];

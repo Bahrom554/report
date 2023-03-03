@@ -62,6 +62,7 @@ class TaskController extends Controller
      */
     public function show(Request $request, $id)
     {
+        
         $query = QueryBuilder::for(Task::class);
         $task=$query->findOrFail($id);
         if (!empty($request->append)) {
